@@ -1,4 +1,4 @@
-package InputOutput;
+package com.masolria.InputOutput;
 
 import java.util.Scanner;
 
