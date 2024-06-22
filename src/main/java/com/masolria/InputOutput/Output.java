@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 public class Output {
 
-    public static void output(String output){
+    public void output(String output){
        System.out.println(output+"\n");
     }
 }
