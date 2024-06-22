@@ -1,5 +1,4 @@
 #### coworking Console Application
-Is a simple Java-based program designed to manage and monitor various aspects related to meter readings and user submissions. The application offers different user interfaces for both regular and administrative users, allowing them to perform tasks such as submitting readings, accessing submission history, and managing meter types.
 
 #### Key Features
 - user registration and authorization;
