@@ -7,6 +7,7 @@ import com.masolria.controller.ConsoleController;
 import com.masolria.entity.Booking;
 import com.masolria.entity.User;
 import com.masolria.entity.enums.SpaceType;
+import com.masolria.exception.OccupiedConflictException;
 import com.masolria.util.DateTimeParseUtil;
 
 import java.time.DateTimeException;
@@ -74,6 +75,12 @@ public class HandleBookingView {
         showFreeSlots(output, controller);
         try {
             Long bookingId = Long.parseLong(input.input());
+
+            if (controller.getBookingById(bookingId).isPresent()) {
+                if (controller.getBookingById(bookingId).get().isBooked()) {
+                    throw new OccupiedConflictException("Sorry, this slot is already booked");
+                }
+            }
             controller.updateBooking(bookingId);
             output.output("You have successfully booked a space");
         } catch (NumberFormatException e) {
