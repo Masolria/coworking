@@ -1,11 +1,12 @@
-package service;
+package com.masolria.service;
 
-import entity.User;
-import repository.UserRepository;
+import com.masolria.entity.User;
+import com.masolria.repository.UserRepository;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
-
+@AllArgsConstructor
 public class UserService {
     UserRepository userRepository;
 

@@ -1,6 +1,6 @@
-package repository;
+package com.masolria.repository;
 
-import entity.User;
+import com.masolria.entity.User;
 
 import java.util.*;
 

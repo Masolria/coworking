@@ -1,4 +1,4 @@
-package entity;
+package com.masolria.entity;
 
 import lombok.*;
 

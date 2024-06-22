@@ -1,10 +1,11 @@
-package service;
+package com.masolria.service;
 
-import entity.User;
+import com.masolria.entity.User;
+import lombok.AllArgsConstructor;
 
 
 import java.util.Optional;
-
+@AllArgsConstructor
 public class EntryService {
     UserService userService;
 
