@@ -26,8 +26,7 @@ public class SpaceRepository {
         if (spaces.containsKey(space.getId())) {
             spaces.put(space.getId(), space);
         } else {
-            space.setId(id++);
-            save(space);
+            return save(space);
         }
         return space;
     }
