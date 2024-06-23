@@ -80,7 +80,8 @@ public class HandleBookingView {
                     throw new OccupiedConflictException("Sorry, this slot is already booked");
                 }
                 booking.setBooked(true);
-                controller.updateBooking(bookingId);
+                booking.setBookedForUserId(AppContext.getAuthorizedUser().getId());
+                controller.updateBooking(booking);
                 output.output("You have successfully booked a space");
                 return;
             }
