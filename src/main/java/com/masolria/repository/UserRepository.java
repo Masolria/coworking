@@ -31,8 +31,7 @@ public class UserRepository {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         } else {
-            user.setId(id++);
-            save(user);
+           return save(user);
         }
         return user;
     }
