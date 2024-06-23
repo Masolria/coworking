@@ -68,26 +68,26 @@ public class HandleBookingView {
         }
     }
 
-
     public static void ShowReserve(Input input, Output output, ConsoleController controller) {
-
         output.output("Write the id of the booking entry you want to keep for yourself");
         showFreeSlots(output, controller);
         try {
             Long bookingId = Long.parseLong(input.input());
-
-            if (controller.getBookingById(bookingId).isPresent()) {
-                if (controller.getBookingById(bookingId).get().isBooked()) {
+            Optional<Booking> optionalBooking = controller.getBookingById(bookingId);
+            if (optionalBooking.isPresent()) {
+                Booking booking = optionalBooking.get();
+                if (booking.isBooked()) {
                     throw new OccupiedConflictException("Sorry, this slot is already booked");
                 }
+                booking.setBooked(true);
+                controller.updateBooking(bookingId);
+                output.output("You have successfully booked a space");
+                return;
             }
-            controller.updateBooking(bookingId);
-            output.output("You have successfully booked a space");
+            output.output("Sorry, slot with given id doesn't exist");
         } catch (NumberFormatException e) {
             output.output("Your input isn't correct");
         }
-
-
     }
 
     //можно случайно удалить чужую бронь
@@ -107,12 +107,8 @@ public class HandleBookingView {
             } else {
                 output.output("There is no such booking");
             }
-
-
         } catch (Exception e) {
             output.output("Unrecognized exception here");
         }
     }
-
-
 }
