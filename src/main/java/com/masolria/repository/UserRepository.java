@@ -14,6 +14,7 @@ public class UserRepository {
                 .email("default@mail.com")
                 .password("password")
                 .build();
+        users.put(defaultUser.getId(),defaultUser);
     }
 
     public User save(User user) {
