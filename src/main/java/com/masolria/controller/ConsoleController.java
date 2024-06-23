@@ -22,7 +22,8 @@ public class ConsoleController {
     private final BookingService bookingService;
 
 
-    public void updateBooking(Long bookingId) {
+    public void updateBooking(Booking booking) {
+        bookingService.update(booking);
     }
 
     public List<Booking> getAllFreeSlots() {
