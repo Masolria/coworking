@@ -14,6 +14,7 @@ public class UserRepository {
                 .email("default@mail.com")
                 .password("password")
                 .build();
+        users.put(defaultUser.getId(),defaultUser);
     }
 
     public User save(User user) {
@@ -30,8 +31,7 @@ public class UserRepository {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         } else {
-            user.setId(id++);
-            save(user);
+           return save(user);
         }
         return user;
     }
@@ -45,7 +45,6 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        Optional<User> result;
         for (User user : users.values()) {
             if (user.getEmail().equals(email)) {
                 return Optional.of(user);

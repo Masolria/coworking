@@ -33,7 +33,6 @@ public class BookingRepository {
         if (bookings.containsKey(booking.getId())) {
             bookings.put(booking.getId(), booking);
         } else {
-            booking.setId(id++);
             save(booking);
         }
         return booking;

@@ -12,7 +12,7 @@ public class SpaceRepository {
 
     public SpaceRepository(){
         spaces.put(id,Space.builder().id(id++).location("1st floor room 1").spaceType(SpaceType.WorkingSpace).build());
-        spaces.put(id,Space.builder().id(id++).location("2st floor room 22").spaceType(SpaceType.ConferenceHall).build());
+        spaces.put(id,Space.builder().id(id++).location("2nd floor room 22").spaceType(SpaceType.ConferenceHall).build());
     }
 
     public Space save(Space space) {
@@ -26,8 +26,7 @@ public class SpaceRepository {
         if (spaces.containsKey(space.getId())) {
             spaces.put(space.getId(), space);
         } else {
-            space.setId(id++);
-            save(space);
+            return save(space);
         }
         return space;
     }
