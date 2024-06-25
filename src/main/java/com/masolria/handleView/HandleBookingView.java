@@ -52,7 +52,6 @@ public class HandleBookingView {
         }
     }
 
-    //date parse
     public static void ShowByDate(Input input, Output output, ConsoleController controller) {
         output.output("Write the date you what to see bookings, in the format yyyy mm dd");
         String format = input.input();
@@ -68,7 +67,7 @@ public class HandleBookingView {
         }
     }
 
-    public static void ShowReserve(Input input, Output output, ConsoleController controller) {
+    public static void showReserve(Input input, Output output, ConsoleController controller) {
         output.output("Write the id of the booking entry you want to keep for yourself");
         showFreeSlots(output, controller);
         try {
@@ -91,7 +90,6 @@ public class HandleBookingView {
         }
     }
 
-    //можно случайно удалить чужую бронь
     public static void ShowReleaseBooking(Input input, Output output, ConsoleController controller) {
         User user = AppContext.getAuthorizedUser();
         List<Booking> bookings = controller.getAllBookingByUser(user);
@@ -104,11 +102,20 @@ public class HandleBookingView {
             Optional<Booking> bookingOptional = controller.getBookingById(id);
             if (bookingOptional.isPresent()) {
                 Booking booking = bookingOptional.get();
-                controller.deleteBooking(booking);
+                if (booking.getBookedForUserId().equals(user.getId())) {
+                    booking.setBooked(false);
+                    booking.setBookedForUserId(null);
+                    controller.updateBooking(booking);
+                    output.output("Booking released successfully.");
+                } else {
+                    output.output("You can only release your own bookings");
+                }
             } else {
-                output.output("There is no such booking");
+                output.output("There is no such booking with the given id");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            output.output("Your input isn't correct");
+        } catch (RuntimeException e) {
             output.output("Unrecognized exception here");
         }
     }
