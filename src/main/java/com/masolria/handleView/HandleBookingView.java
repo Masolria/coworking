@@ -90,7 +90,7 @@ public class HandleBookingView {
         }
     }
 
-    public static void ShowReleaseBooking(Input input, Output output, ConsoleController controller) {
+    public static void showReleaseBooking(Input input, Output output, ConsoleController controller) {
         User user = AppContext.getAuthorizedUser();
         List<Booking> bookings = controller.getAllBookingByUser(user);
         output.output("There are all your bookings, write id you want to release");
