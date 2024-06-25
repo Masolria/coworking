@@ -43,8 +43,22 @@ public class HandleBookingView {
     }
 
     public static void ShowByType(Input input, Output output, ConsoleController controller) {
-        output.output("Write the type of booking space you would like to see");
-        SpaceType spaceType = SpaceType.valueOf(input.input().toUpperCase());
+        output.output("""
+                      Write the type of booking space you would like to see:
+                      1.working space
+                      2.conference hall
+                      """);
+        Long spaceNum = Long.valueOf(input.input());
+        SpaceType spaceType;
+        if(spaceNum.equals(1L)){
+            spaceType = SpaceType.WorkingSpace;
+        } else if (spaceNum.equals(2L)) {
+            spaceType = SpaceType.ConferenceHall;
+        }else{
+            output.output("Your space type input is not correct");
+            return;
+        }
+
         List<Booking> bookings = controller.getAllBookingByType(spaceType);
         output.output("There are all booking by given type");
         for (Booking booking : bookings) {
