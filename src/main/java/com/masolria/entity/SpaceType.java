@@ -1,4 +1,4 @@
-package com.masolria.entity.enums;
+package com.masolria.entity;
 
 public enum SpaceType {
     WorkingSpace,
