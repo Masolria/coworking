@@ -1,4 +1,4 @@
-package com.masolria.InputOutput;
+package com.masolria.out;
 
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
