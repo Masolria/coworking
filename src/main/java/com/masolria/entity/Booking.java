@@ -20,14 +20,14 @@ public class Booking {
     private LocalDateTime timeEnd;
     private Long spaceId ;
     //nullable
-    private Long bookedForUserId;
+    private Long forUserId;
 
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Booking booking)) return false;
 
-        return isBooked == booking.isBooked && Objects.equals(id, booking.id) && Objects.equals(timeStart, booking.timeStart) && Objects.equals(timeEnd, booking.timeEnd) && Objects.equals(spaceId, booking.spaceId) && Objects.equals(bookedForUserId, booking.bookedForUserId);
+        return isBooked == booking.isBooked && Objects.equals(id, booking.id) && Objects.equals(timeStart, booking.timeStart) && Objects.equals(timeEnd, booking.timeEnd) && Objects.equals(spaceId, booking.spaceId) && Objects.equals(forUserId, booking.forUserId);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Booking {
         result = 31 * result + Objects.hashCode(timeStart);
         result = 31 * result + Objects.hashCode(timeEnd);
         result = 31 * result + Objects.hashCode(spaceId);
-        result = 31 * result + Objects.hashCode(bookedForUserId);
+        result = 31 * result + Objects.hashCode(forUserId);
         return result;
     }
 }
