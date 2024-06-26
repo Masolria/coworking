@@ -1,8 +1,9 @@
 package com.masolria;
 
-import com.masolria.InputOutput.*;
 import com.masolria.controller.ConsoleController;
 import com.masolria.entity.User;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
 import com.masolria.repository.BookingRepository;
 import com.masolria.repository.SpaceRepository;
 import com.masolria.repository.UserRepository;
