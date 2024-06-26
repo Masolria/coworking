@@ -1,11 +1,13 @@
 package com.masolria.handleView;
 
 import com.masolria.AppState;
-import com.masolria.InputOutput.Input;
-import com.masolria.InputOutput.Output;
+
 import com.masolria.controller.ConsoleController;
 import com.masolria.entity.Space;
-import com.masolria.entity.enums.SpaceType;
+import com.masolria.entity.SpaceType;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
+
 
 import java.util.List;
 
