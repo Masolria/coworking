@@ -18,7 +18,7 @@ public class EntryService {
         return user;
     }
 
-    //TODO
+
     public User authorize(String email, String password) {
         User user;
         Optional<User> userOptional = userService.getByEmail(email);
