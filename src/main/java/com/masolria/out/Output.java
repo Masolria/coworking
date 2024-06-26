@@ -1,6 +1,4 @@
-package com.masolria.InputOutput;
-
-import java.io.PrintWriter;
+package com.masolria.out;
 
 public class Output {
 
