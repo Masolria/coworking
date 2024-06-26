@@ -1,8 +1,8 @@
 package com.masolria.repository;
 
 import com.masolria.entity.Space;
+import com.masolria.entity.SpaceType;
 
-import com.masolria.entity.enums.SpaceType;
 
 import java.util.*;
 

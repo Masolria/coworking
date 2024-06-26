@@ -1,13 +1,13 @@
 package com.masolria.handleView;
 
 import com.masolria.AppContext;
-import com.masolria.InputOutput.Input;
-import com.masolria.InputOutput.Output;
 import com.masolria.controller.ConsoleController;
 import com.masolria.entity.Booking;
+import com.masolria.entity.SpaceType;
 import com.masolria.entity.User;
-import com.masolria.entity.enums.SpaceType;
 import com.masolria.exception.OccupiedConflictException;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
 import com.masolria.util.DateTimeParseUtil;
 
 import java.time.DateTimeException;
@@ -27,7 +27,7 @@ public class HandleBookingView {
     }
 
     //User
-    public static void ShowByUser(Input input, Output output, ConsoleController controller) {
+    public static void showByUser(Input input, Output output, ConsoleController controller) {
         output.output("Write the email of user whose bookings you would like to see");
         Optional<User> optional = controller.getUserByEmail(input.input());
         if (optional.isPresent()) {

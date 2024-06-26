@@ -2,7 +2,7 @@ package com.masolria.service;
 
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
-import com.masolria.entity.enums.SpaceType;
+import com.masolria.entity.SpaceType;
 import com.masolria.repository.BookingRepository;
 import lombok.AllArgsConstructor;
 
@@ -38,7 +38,6 @@ public class BookingService {
         List<Booking> bookings = findAll();
         return bookings.stream()
                 .filter(b -> {
-                    LocalDate currentLocalDate = b.getBookingTimeStart().toLocalDate();
                     return b.getBookingTimeStart()
                             .toLocalDate()
                             .equals(localDate);

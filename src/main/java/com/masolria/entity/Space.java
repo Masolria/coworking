@@ -1,8 +1,6 @@
 package com.masolria.entity;
 
-import com.masolria.entity.enums.SpaceType;
 import lombok.*;
-
 import java.util.Objects;
 
 @Getter
