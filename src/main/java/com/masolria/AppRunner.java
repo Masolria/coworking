@@ -1,7 +1,7 @@
 package com.masolria;
 
-import com.masolria.InputOutput.Input;
-import com.masolria.InputOutput.Output;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
 import com.masolria.controller.ConsoleController;
 
 
@@ -40,26 +40,34 @@ public class AppRunner {
             2.spaces
             3.quit
             """;
-    static AppState appState = AppState.ENTRY;
 
-    public static void run() {
+    public AppRunner() {
         AppContext.loadForInjection();
-        ConsoleController controller = (ConsoleController) AppContext.getBean("consoleController");
-        Input input = (Input) AppContext.getBean("input");
-        Output output = (Output) AppContext.getBean("output");
+        input = (Input) AppContext.getBean("input");
+        output = (Output) AppContext.getBean("output");
+        controller = (ConsoleController) AppContext.getBean("consoleController");
+    }
+
+    static AppState appState = AppState.ENTRY;
+    private final Input input;
+    private final Output output;
+    private final ConsoleController controller;
+
+    public void run() {
+
         boolean isAppRunning = true;
         while (isAppRunning) {
             switch (appState) {
-                case MENU -> runMenu(input, output, controller);
-                case ENTRY -> runEntry(input, output, controller);
-                case BOOKINGS -> runBookings(input, output, controller);
-                case SPACES -> runSpaces(input, output, controller);
+                case MENU -> runMenu();
+                case ENTRY -> runEntry();
+                case BOOKINGS -> runBookings();
+                case SPACES -> runSpaces();
                 case QUIT -> isAppRunning = false;
             }
         }
     }
 
-    private static void runSpaces(Input input, Output output, ConsoleController controller) {
+    private void runSpaces() {
         output.output(SPACE_ACTIONS);
         switch (input.input()) {
             case "1" -> showWatchAll(output, controller);
@@ -69,43 +77,43 @@ public class AppRunner {
         }
     }
 
-        private static void runBookings (Input input, Output output, ConsoleController controller){
-            output.output(BOOKING_ACTIONS);
-            switch (input.input()) {
-                case "1" -> showFreeSlots(output, controller);
-                case "2" -> ShowReserve(input, output, controller);
-                case "3" -> ShowByDate(input, output, controller);
-                case "4" -> ShowByUser(input, output, controller);
-                case "5" -> ShowByType(input, output, controller);
-                case "6"->ShowReleaseBooking(input,output,controller);
-                case "7" -> appState = AppState.QUIT;
-                default -> output.output("Write one of the given commands");
+    private void runBookings() {
+        output.output(BOOKING_ACTIONS);
+        switch (input.input()) {
+            case "1" -> showFreeSlots(output, controller);
+            case "2" -> showReserve(input, output, controller);
+            case "3" -> ShowByDate(input, output, controller);
+            case "4" -> showByUser(input, output, controller);
+            case "5" -> ShowByType(input, output, controller);
+            case "6" -> showReleaseBooking(input, output, controller);
+            case "7" -> appState = AppState.QUIT;
+            default -> output.output("Write one of the given commands");
 
-            }
-        }
-
-
-        private static void runMenu (Input input, Output output, ConsoleController controller){
-            output.output(MENU_ACTIONS);
-            int section = Integer.parseInt(input.input());
-            if (section == 1) {
-                appState = AppState.BOOKINGS;
-            } else if (section == 2) {
-                appState = AppState.SPACES;
-            } else if (section == 3) {
-                appState = AppState.QUIT;
-            } else {
-                output.output("Write correct number");
-            }
-        }
-
-        private static void runEntry (Input input, Output output, ConsoleController controller){
-            output.output(ENTRY);
-            switch (input.input()) {
-                case "1" -> appState =handleRegistration(input, output, controller);
-                case "2" -> appState =handleAuthorization(input, output, controller);
-                case "3" -> appState = AppState.QUIT;
-                default -> output.output("Write one of the given commands");
-            }
         }
     }
+
+
+    private void runMenu() {
+        output.output(MENU_ACTIONS);
+        int section = Integer.parseInt(input.input());
+        if (section == 1) {
+            appState = AppState.BOOKINGS;
+        } else if (section == 2) {
+            appState = AppState.SPACES;
+        } else if (section == 3) {
+            appState = AppState.QUIT;
+        } else {
+            output.output("Write correct number");
+        }
+    }
+
+    private void runEntry() {
+        output.output(ENTRY);
+        switch (input.input()) {
+            case "1" -> appState = handleRegistration(input, output, controller);
+            case "2" -> appState = handleAuthorization(input, output, controller);
+            case "3" -> appState = AppState.QUIT;
+            default -> output.output("Write one of the given commands");
+        }
+    }
+}
