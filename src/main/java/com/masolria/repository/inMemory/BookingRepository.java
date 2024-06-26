@@ -1,4 +1,4 @@
-package com.masolria.repository;
+package com.masolria.repository.inMemory;
 
 import com.masolria.entity.Booking;
 
@@ -11,12 +11,12 @@ public class BookingRepository {
     private Long id = 1L;
 
     public BookingRepository() {
-       Booking booking= Booking.builder()
+        Booking booking = Booking.builder()
                 .spaceId(1L)
                 .id(id++)
                 .isBooked(false)
-                .bookingTimeStart(LocalDateTime.of(2024, 6, 22, 13, 0))
-                .bookingTimeEnd(LocalDateTime.of(2024, 6, 22, 14, 0))//.bookedForUserId(0L)
+                .timeStart(LocalDateTime.of(2024, 6, 22, 13, 0))
+                .timeEnd(LocalDateTime.of(2024, 6, 22, 14, 0))//.bookedForUserId(0L)
                 .build();
 
        bookings.put(booking.getId(), booking);
