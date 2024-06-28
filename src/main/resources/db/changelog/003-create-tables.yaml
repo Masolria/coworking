@@ -110,6 +110,7 @@ databaseChangeLog:
                   name: for_user_id
                   type: BIGINT
                   constraints:
+                     nullable: true
                      foreignKeyName: fk_booking_user
                      references: coworking_schema.users(id)
       rollback:
