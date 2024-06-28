@@ -24,9 +24,9 @@ public class HandleSpaceView {
         String stringType = input.input();
         SpaceType spaceType;
         if ("1".equals(stringType)) {
-            spaceType = SpaceType.WorkingSpace;
+            spaceType = SpaceType.WORKING_SPACE;
         } else if (stringType.equals("2")) {
-            spaceType = SpaceType.ConferenceHall;
+            spaceType = SpaceType.CONFERENCE_HALL;
         }else {
             output.output("Cannot add space with given type");
             return;
