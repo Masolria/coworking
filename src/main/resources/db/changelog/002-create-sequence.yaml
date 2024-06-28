@@ -4,6 +4,7 @@ databaseChangeLog:
       author: Maria_solsol
       changes:
         - createSequence:
+            schemaName: coworking_schema
             sequenceName: id_seq
             startValue: 100000
             incrementBy: 1

@@ -13,7 +13,7 @@ databaseChangeLog:
                   constraints:
                      primaryKey: true
                      nullable: false
-                  defaultValueComputed: nextval('id_seq')
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
               - column:
                   name: email
                   type: VARCHAR(320)
@@ -55,7 +55,7 @@ databaseChangeLog:
                   constraints:
                      primaryKey: true
                      nullable: false
-                  defaultValueComputed: nextval('id_seq')
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
               - column:
                   name: location
                   type: VARCHAR(255)
@@ -83,7 +83,7 @@ databaseChangeLog:
                   constraints:
                      primaryKey: true
                      nullable: false
-                  defaultValueComputed: nextval('id_seq')
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
               - column:
                   name: is_booked
                   type: BOOLEAN
