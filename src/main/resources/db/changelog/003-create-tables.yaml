@@ -105,13 +105,13 @@ databaseChangeLog:
                   constraints:
                      nullable: false
                      foreignKeyName: fk_booking_space
-                     references: space(id)
+                     references: coworking_schema.space(id)
               - column:
                   name: for_user_id
                   type: BIGINT
                   constraints:
                      foreignKeyName: fk_booking_user
-                     references: users(id)
+                     references: coworking_schema.users(id)
       rollback:
         - dropTable:
             tableName: booking
