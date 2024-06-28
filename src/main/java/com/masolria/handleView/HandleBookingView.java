@@ -51,9 +51,9 @@ public class HandleBookingView {
         Long spaceNum = Long.valueOf(input.input());
         SpaceType spaceType;
         if(spaceNum.equals(1L)){
-            spaceType = SpaceType.WorkingSpace;
+            spaceType = SpaceType.WORKING_SPACE;
         } else if (spaceNum.equals(2L)) {
-            spaceType = SpaceType.ConferenceHall;
+            spaceType = SpaceType.CONFERENCE_HALL;
         }else{
             output.output("Your space type input is not correct");
             return;
@@ -93,7 +93,7 @@ public class HandleBookingView {
                     throw new OccupiedConflictException("Sorry, this slot is already booked");
                 }
                 booking.setBooked(true);
-                booking.setBookedForUserId(AppContext.getAuthorizedUser().getId());
+                booking.setForUserId(AppContext.getAuthorizedUser().getId());
                 controller.updateBooking(booking);
                 output.output("You have successfully booked a space");
                 return;
@@ -116,9 +116,9 @@ public class HandleBookingView {
             Optional<Booking> bookingOptional = controller.getBookingById(id);
             if (bookingOptional.isPresent()) {
                 Booking booking = bookingOptional.get();
-                if (booking.getBookedForUserId().equals(user.getId())) {
+                if (booking.getForUserId().equals(user.getId())) {
                     booking.setBooked(false);
-                    booking.setBookedForUserId(null);
+                    booking.setForUserId(null);
                     controller.updateBooking(booking);
                     output.output("Booking released successfully.");
                 } else {
