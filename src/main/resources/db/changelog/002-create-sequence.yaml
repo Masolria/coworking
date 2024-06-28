@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Maria_solsol
+      changes:
+        - createSequence:
+            sequenceName: id_seq
+            startValue: 100000
+            incrementBy: 1
+      rollback:
+        - dropSequence:
+            sequenceName: id_seq
