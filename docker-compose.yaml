@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:16
+    container_name: coworking_postgres_db
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=coworking_user
+      - POSTGRES_DB=coworking_db
+      - POSTGRES_PASSWORD=coworkpassword
