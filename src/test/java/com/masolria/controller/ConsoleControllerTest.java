@@ -3,8 +3,8 @@ package com.masolria.controller;
 import com.masolria.AppState;
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
+import com.masolria.entity.SpaceType;
 import com.masolria.entity.User;
-import com.masolria.entity.enums.SpaceType;
 import com.masolria.service.BookingService;
 import com.masolria.service.EntryService;
 import com.masolria.service.SpaceService;
@@ -61,7 +61,7 @@ class ConsoleControllerTest {
 
     @Test
     void getAllBookingByType_ReturnsBookingServiceByType() {
-        SpaceType spaceType = SpaceType.ConferenceHall;
+        SpaceType spaceType = SpaceType.CONFERENCE_HALL;
         List<Booking> expected = Arrays.asList(new Booking(), new Booking());
         when(bookingService.getByType(spaceType)).thenReturn(expected);
         List<Booking> result = controller.getAllBookingByType(spaceType);

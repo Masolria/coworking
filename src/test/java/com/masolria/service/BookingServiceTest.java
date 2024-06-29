@@ -2,8 +2,8 @@ package com.masolria.service;
 
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
-import com.masolria.entity.enums.SpaceType;
-import com.masolria.repository.BookingRepository;
+import com.masolria.entity.SpaceType;
+import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,15 +26,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BookingServiceTest {
     @Mock
-    BookingRepository bookingRepository;
+    JdbcBookingRepository bookingRepository;
     @Mock
     SpaceService spaceService;
     @InjectMocks
     BookingService bookingService;
     Booking given = Booking.builder()
             .isBooked(false)
-            .bookingTimeStart(LocalDateTime.of(2024, 2, 12, 12, 0))
-            .bookedForUserId(3L)
+            .timeStart(LocalDateTime.of(2024, 2, 12, 12, 0))
+            .forUserId(3L)
             .build();
 
     @BeforeEach
@@ -52,16 +52,16 @@ class BookingServiceTest {
     void getByUserId() {
         Long userId = 3L;
         List<Booking> allBookings = Arrays.asList(
-                Booking.builder().id(1L).bookedForUserId(3L).build(),
-                Booking.builder().id(2L).bookedForUserId(4L).build(),
-                Booking.builder().id(3L).bookedForUserId(3L).build()
+                Booking.builder().id(1L).forUserId(3L).build(),
+                Booking.builder().id(2L).forUserId(4L).build(),
+                Booking.builder().id(3L).forUserId(3L).build()
         );
 
         when(bookingRepository.findAll()).thenReturn(allBookings);
 
         List<Booking> userBookings = bookingService.getByUserId(userId);
         assertThat(userBookings).hasSize(2);
-        assertThat(userBookings).allMatch(b -> userId.equals(b.getBookedForUserId()));
+        assertThat(userBookings).allMatch(b -> userId.equals(b.getForUserId()));
     }
 
     @Test
@@ -100,7 +100,7 @@ class BookingServiceTest {
     @Test
     void getByDate() {
         List<Booking> given = List.of(Booking.builder()
-                .bookingTimeStart(LocalDateTime.of(2020, 1, 1, 12, 0))
+                .timeStart(LocalDateTime.of(2020, 1, 1, 12, 0))
                 .build());
         when(bookingRepository.findAll()).thenReturn(given);
         List<Booking> actual = bookingService.getByDate(LocalDate.of(2020, 1, 1));
@@ -109,12 +109,12 @@ class BookingServiceTest {
 
     @Test
     void getByType() {
-        Space space = Space.builder().id(3L).spaceType(SpaceType.WorkingSpace).build();
+        Space space = Space.builder().id(3L).spaceType(SpaceType.WORKING_SPACE).build();
         Booking booking = Booking.builder().spaceId(3L).build();
         List<Booking> given = List.of(booking);
         when(spaceService.findById(3L)).thenReturn(Optional.of(space));
         when(bookingRepository.findAll()).thenReturn(given);
-        List<Booking> actual = bookingService.getByType(SpaceType.WorkingSpace);
+        List<Booking> actual = bookingService.getByType(SpaceType.WORKING_SPACE);
         assertThat(actual).isEqualTo(given);
     }
 
