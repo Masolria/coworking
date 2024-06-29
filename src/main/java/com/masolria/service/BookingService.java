@@ -3,7 +3,7 @@ package com.masolria.service;
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
-import com.masolria.repository.BookingRepository;
+import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 @AllArgsConstructor
 public class BookingService {
-    BookingRepository bookingRepository;
+    JdbcBookingRepository bookingRepository;
     SpaceService spaceService;
 
     public Booking save(Booking booking) {
@@ -37,11 +37,9 @@ public class BookingService {
     public List<Booking> getByDate(LocalDate localDate){
         List<Booking> bookings = findAll();
         return bookings.stream()
-                .filter(b -> {
-                    return b.getBookingTimeStart()
-                            .toLocalDate()
-                            .equals(localDate);
-                })
+                .filter(b -> b.getTimeStart()
+                        .toLocalDate()
+                        .equals(localDate))
                 .toList();
     }
 
@@ -60,7 +58,7 @@ public class BookingService {
     public List<Booking> getByUserId(Long userId) {
         List<Booking> bookings = findAll();
         return bookings.stream()
-                .filter(b -> userId.equals(b.getBookedForUserId()))
+                .filter(b -> userId.equals(b.getForUserId()))
                 .toList();
 
     }

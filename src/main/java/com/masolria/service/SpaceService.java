@@ -1,7 +1,7 @@
 package com.masolria.service;
 
 import com.masolria.entity.Space;
-import com.masolria.repository.SpaceRepository;
+import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 public class SpaceService {
-    SpaceRepository spaceRepository;
+    JdbcSpaceRepository spaceRepository;
 
     public List<Space> getAll() {
         return spaceRepository.findAll();

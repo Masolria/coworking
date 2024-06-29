@@ -14,7 +14,7 @@ public class EntryService {
         if (email == null || password == null || email.isBlank() || email.isEmpty() || password.isEmpty() || password.isBlank()) {
             throw new IllegalArgumentException("cannot register, input data is invalid");
         }
-        user = userService.userRepository.save(User.builder().email(email).password(password).build());
+        user = userService.save(User.builder().email(email).password(password).build());
         return user;
     }
 

@@ -1,14 +1,14 @@
 package com.masolria.service;
 
 import com.masolria.entity.User;
-import com.masolria.repository.UserRepository;
+import com.masolria.repository.Jdbc.JdbcUserRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
-    UserRepository userRepository;
+    JdbcUserRepository userRepository;
 
     public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email);
