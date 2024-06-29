@@ -13,6 +13,7 @@ import com.masolria.service.SpaceService;
 import com.masolria.service.UserService;
 import com.masolria.db.ConnectionManager;
 import com.masolria.db.LiquibaseRunner;
+import com.masolria.util.PropertiesUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class AppContext {
     }
 
     public static void loadForInjection() {
-        ConnectionManager cManager = new ConnectionManager();
+        ConnectionManager cManager = loadPropertiesToConnectionManager();
         CONTEXT.put("connectionManager",cManager);
         LiquibaseRunner liquibaseRunner = new LiquibaseRunner(cManager);
         liquibaseRunner.runMigration();
@@ -48,4 +49,14 @@ public class AppContext {
         CONTEXT.put("output", new Output());
 
     }
+    public static ConnectionManager loadPropertiesToConnectionManager(){
+        PropertiesUtil propertiesUtil = new PropertiesUtil();
+
+        propertiesUtil.loadProperties();
+        String url = propertiesUtil.getProperty("postgres.url");
+        String user = propertiesUtil.getProperty("postgres.user");
+        String password = propertiesUtil.getProperty("postgres.password");
+        return new ConnectionManager(url,user,password);
+    }
+
 }
