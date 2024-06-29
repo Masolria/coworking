@@ -1,6 +1,7 @@
 package com.masolria.repository;
 
 import com.masolria.db.ConnectionManager;
+import com.masolria.db.LiquibaseRunner;
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
@@ -29,11 +30,18 @@ public class PostgresTestContainer {
     @Container
     private final static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName
             .parse("postgres:16"));
-    ConnectionManager cManager = new ConnectionManager();
+
 
     @BeforeAll
     static void beforeAll() {
         postgres.start();
+        ConnectionManager cManager = new ConnectionManager(
+                postgres.getJdbcUrl(),
+                postgres.getUsername(),
+                postgres.getPassword()
+        );
+        LiquibaseRunner testMigration = new LiquibaseRunner(cManager);
+        testMigration.runMigration();
     }
 
     @AfterAll
@@ -44,6 +52,11 @@ public class PostgresTestContainer {
 
     @AfterEach
     void tearDown() {
+        ConnectionManager cManager = new ConnectionManager(
+                postgres.getJdbcUrl(),
+                postgres.getUsername(),
+                postgres.getPassword()
+        );
         try (Connection connection = cManager.getConnection()) {
             Statement statement = connection.createStatement();
             statement.execute("TRUNCATE TABLE  coworking_schema.booking;");
@@ -58,10 +71,17 @@ public class PostgresTestContainer {
     class JdbcSpaceRepositoryTest {
         Space given;
         Space given2;
-        JdbcSpaceRepository jdbcSpaceRepository = new JdbcSpaceRepository(cManager);
+        JdbcSpaceRepository jdbcSpaceRepository;
+
 
         @BeforeEach
         void setupTestData() {
+            ConnectionManager cManager = new ConnectionManager(
+                    postgres.getJdbcUrl(),
+                    postgres.getUsername(),
+                    postgres.getPassword()
+            );
+            jdbcSpaceRepository = new JdbcSpaceRepository(cManager);
             given = Space.builder().location("unknown").spaceType(SpaceType.CONFERENCE_HALL).build();
             given2 = Space.builder().location("unknown2").spaceType(SpaceType.WORKING_SPACE).build();
         }
@@ -110,11 +130,20 @@ public class PostgresTestContainer {
             assertThat(spaces).hasSize(2);
         }
     }
-
     @Nested
     class JdbcUserRepositoryTest {
-        JdbcUserRepository jdbcUserRepository = new JdbcUserRepository(cManager);
+        JdbcUserRepository jdbcUserRepository;
         User given = User.builder().email("some@mail.com").password("password").build();
+
+        @BeforeEach
+        void setupTestData() {
+            ConnectionManager cManager = new ConnectionManager(
+                    postgres.getJdbcUrl(),
+                    postgres.getUsername(),
+                    postgres.getPassword()
+            );
+            jdbcUserRepository = new JdbcUserRepository(cManager);
+        }
 
         @Test
         @DisplayName("test checks for correct saving user")
@@ -163,14 +192,26 @@ public class PostgresTestContainer {
 
     @Nested
     class JdbcBookingRepositoryTest {
-        Booking given = Booking.builder()
-                .isBooked(true)
-                .spaceId(1L)
-                .timeEnd(LocalDateTime.of(2024, 6, 28, 12, 0))
-                .timeStart(LocalDateTime.of(2024, 6, 28, 13, 0))
-                .forUserId(11L)
-                .build();
-        JdbcBookingRepository jdbcBookingRepository = new JdbcBookingRepository(cManager);
+        Booking given;
+        JdbcBookingRepository jdbcBookingRepository;
+
+        @BeforeEach
+        void setupTestData() {
+            ConnectionManager cManager = new ConnectionManager(
+                    postgres.getJdbcUrl(),
+                    postgres.getUsername(),
+                    postgres.getPassword()
+            );
+            jdbcBookingRepository = new JdbcBookingRepository(cManager);
+             given = Booking.builder()
+                    .isBooked(true)
+                    .spaceId(1L)
+                    .timeEnd(LocalDateTime.of(2024, 6, 28, 12, 0))
+                    .timeStart(LocalDateTime.of(2024, 6, 28, 13, 0))
+                    .forUserId(11L)
+                    .build();
+
+        }
 
         @Test
         void delete() {
