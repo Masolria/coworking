@@ -1,0 +1,39 @@
+databaseChangeLog:
+  -  changeSet:
+       id: 7
+       author: Maria_solsol
+       changes:
+         - insert:
+             tableName: users
+             schemaName: coworking_schema
+             columns:
+               - column:
+                   name: email
+                   value: 'default@email.com'
+               - column:
+                   name: password
+                   value: 'password'
+  -  changeSet:
+       id: 8
+       author: Maria_solsol
+       changes:
+         - insert:
+             tableName: space
+             schemaName: coworking_schema
+             columns:
+               - column:
+                   name: location
+                   value: "1st floor room 12"
+               - column:
+                   name: space_type
+                   value: "CONFERENCE_HALL"
+         - insert:
+             tableName: space
+             schemaName: coworking_schema
+             columns:
+               - column:
+                   name: location
+                   value: "1st floor room 11"
+               - column:
+                   name: space_type
+                   value: "WORKING_SPACE"
