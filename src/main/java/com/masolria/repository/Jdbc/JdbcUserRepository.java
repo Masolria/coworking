@@ -35,8 +35,8 @@ public class JdbcUserRepository {
             if (rs.next()) {
                 return Optional.of(User.builder()
                         .id(rs.getLong("id"))
-                        .email("email")
-                        .password("password")
+                        .email(rs.getString("email"))
+                        .password(rs.getString("password"))
                         .build());
             }
         } catch (SQLException e) {
