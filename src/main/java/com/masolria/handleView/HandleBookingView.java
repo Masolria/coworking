@@ -15,46 +15,66 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Handle booking view class.
+ * Represents methods for console input/output and interaction with console controller.
+ */
 public class HandleBookingView {
 
+    /**
+     * Shows free booking slots.
+     *
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void showFreeSlots(Output output, ConsoleController controller) {
         output.output("There are all free slots");
         List<Booking> bookings = controller.getAllFreeSlots();
         for (Booking booking : bookings) {
             output.output(booking.toString());
         }
-
     }
 
-    //User
+    /**
+     * Shows booking by user email.
+     *
+     * @param input      the input
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void showByUser(Input input, Output output, ConsoleController controller) {
         output.output("Write the email of user whose bookings you would like to see");
-        Optional<User> optional = controller.getUserByEmail(input.input());
-        if (optional.isPresent()) {
-            List<Booking> bookings = controller.getAllBookingByUser(optional.get());
+        List<Booking> bookings = controller.getAllBookingByUserEmail(input.input());
+        if (bookings.isEmpty()) {
+            output.output("There are no such user with given email");
+        } else {
             output.output("There are all booking by given user");
             for (Booking booking : bookings) {
                 output.output(booking.toString());
             }
-        } else {
-            output.output("There are no such user with given email");
         }
-
     }
 
+    /**
+     * Shows bookings by type.
+     *
+     * @param input      the input
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void ShowByType(Input input, Output output, ConsoleController controller) {
         output.output("""
-                      Write the type of booking space you would like to see:
-                      1.working space
-                      2.conference hall
-                      """);
+                Write the type of booking space you would like to see:
+                1.working space
+                2.conference hall
+                """);
         Long spaceNum = Long.valueOf(input.input());
         SpaceType spaceType;
-        if(spaceNum.equals(1L)){
+        if (spaceNum.equals(1L)) {
             spaceType = SpaceType.WORKING_SPACE;
         } else if (spaceNum.equals(2L)) {
             spaceType = SpaceType.CONFERENCE_HALL;
-        }else{
+        } else {
             output.output("Your space type input is not correct");
             return;
         }
@@ -66,6 +86,13 @@ public class HandleBookingView {
         }
     }
 
+    /**
+     * Shows bookings by given date.
+     *
+     * @param input      the input
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void ShowByDate(Input input, Output output, ConsoleController controller) {
         output.output("Write the date you what to see bookings, in the format yyyy mm dd");
         String format = input.input();
@@ -81,6 +108,14 @@ public class HandleBookingView {
         }
     }
 
+    /**
+     * Provides interaction  to controller through input and output.
+     * Performs reservation a booking slot by its id.
+     *
+     * @param input      the input
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void showReserve(Input input, Output output, ConsoleController controller) {
         output.output("Write the id of the booking entry you want to keep for yourself");
         showFreeSlots(output, controller);
@@ -104,6 +139,13 @@ public class HandleBookingView {
         }
     }
 
+    /**
+     * Performs releasing booking slot.
+     *
+     * @param input      the input
+     * @param output     the output
+     * @param controller the controller
+     */
     public static void showReleaseBooking(Input input, Output output, ConsoleController controller) {
         User user = AppContext.getAuthorizedUser();
         List<Booking> bookings = controller.getAllBookingByUser(user);
