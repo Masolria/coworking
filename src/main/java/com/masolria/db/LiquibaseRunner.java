@@ -11,9 +11,20 @@ import lombok.RequiredArgsConstructor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+/**
+ * The Liquibase migration runner.
+ */
 @RequiredArgsConstructor
 public class LiquibaseRunner {
+    /**
+     * The field configures the connection to the database
+     */
     private  final ConnectionManager cManager;
+
+    /**
+     * Runs migration from db.changelog directory. Sets default schema for migration work tables
+     */
     public void runMigration(){
         try(Connection connection = cManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS migration")){
