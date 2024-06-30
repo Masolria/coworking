@@ -5,6 +5,7 @@ import com.masolria.out.Output;
 import com.masolria.controller.ConsoleController;
 
 
+import static com.masolria.AppContext.runMigrations;
 import static com.masolria.handleView.HandleBookingView.*;
 import static com.masolria.handleView.HandleEntryView.handleAuthorization;
 import static com.masolria.handleView.HandleEntryView.handleRegistration;
@@ -65,6 +66,7 @@ public class AppRunner {
      */
     public AppRunner() {
         AppContext.loadForInjection();
+        runMigrations();
         input = (Input) AppContext.getBean("input");
         output = (Output) AppContext.getBean("output");
         controller = (ConsoleController) AppContext.getBean("consoleController");

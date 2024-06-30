@@ -18,25 +18,49 @@ import com.masolria.util.PropertiesUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type App context.
+ */
 public class AppContext {
     private static final Map<String, Object> CONTEXT = new HashMap<>();
 
+    /**
+     * Loads the authorized user into the application context.
+     *
+     * @param user The authorized user to be loaded.
+     */
     public static void loadAuthorizedUser(User user) {
         CONTEXT.put("authorizedUser", user);
     }
 
+    /**
+     * Retrieves the authorized user from the application context.
+     *
+     * @return The authorized user, or null if no user is loaded.
+     */
     public static User getAuthorizedUser() {
         return (User) CONTEXT.get("authorizedUser");
     }
-    public static Object getBean(String beanName){
+
+    /**
+     * Retrieves a bean from the application context by its name.
+     *
+     * @param beanName The name of the bean to retrieve.
+     * @return The bean with the given name, or null if no such bean exists.
+     */
+    public static Object getBean(String beanName) {
         return CONTEXT.get(beanName);
     }
 
+
+    /**
+     * Loads all necessary beans and components into the application context.
+     * This method  runs database migrations,
+     * creates instances of services and controllers, and sets up input/output streams.
+     */
     public static void loadForInjection() {
         ConnectionManager cManager = loadPropertiesToConnectionManager();
-        CONTEXT.put("connectionManager",cManager);
-        LiquibaseRunner liquibaseRunner = new LiquibaseRunner(cManager);
-        liquibaseRunner.runMigration();
+        CONTEXT.put("connectionManager", cManager);
 
         UserService userService = new UserService(new JdbcUserRepository(cManager));
         SpaceService spaceService = new SpaceService(new JdbcSpaceRepository(cManager));
@@ -49,14 +73,30 @@ public class AppContext {
         CONTEXT.put("output", new Output());
 
     }
-    public static ConnectionManager loadPropertiesToConnectionManager(){
+
+    /**
+     * This method initializes the database connection, runs database migrations.
+      */
+
+    public static void runMigrations() {
+        ConnectionManager cManager = (ConnectionManager) getBean("connectionManager");
+        LiquibaseRunner liquibaseRunner = new LiquibaseRunner(cManager);
+        liquibaseRunner.runMigration();
+    }
+
+    /**
+     * Loads database connection properties from a configuration file
+     * and creates a ConnectionManager instance.
+     *
+     * @return A ConnectionManager instance configured with database properties.
+     */
+    public static ConnectionManager loadPropertiesToConnectionManager() {
         PropertiesUtil propertiesUtil = new PropertiesUtil();
 
         propertiesUtil.loadProperties();
         String url = propertiesUtil.getProperty("postgres.url");
         String user = propertiesUtil.getProperty("postgres.user");
         String password = propertiesUtil.getProperty("postgres.password");
-        return new ConnectionManager(url,user,password);
+        return new ConnectionManager(url, user, password);
     }
-
 }
