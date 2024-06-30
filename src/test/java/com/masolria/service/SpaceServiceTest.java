@@ -65,5 +65,4 @@ class SpaceServiceTest {
         Space saved = spaceService.save(given);
         assertThat(saved).isEqualTo(given);
     }
-
 }
