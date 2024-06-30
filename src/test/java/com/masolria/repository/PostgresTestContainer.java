@@ -95,6 +95,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies correct updating space")
         void update() {
             Space saved = jdbcSpaceRepository.save(given);
             saved.setLocation("new location");
@@ -106,6 +107,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test checks for correct deletion space")
         void delete() {
             Space saved = jdbcSpaceRepository.save(given2);
             jdbcSpaceRepository.delete(saved);
@@ -114,6 +116,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies space is found when exists in the table")
         void findById() {
             Space saved = jdbcSpaceRepository.save(given2);
             Optional<Space> foundSpace = jdbcSpaceRepository.findById(saved.getId());
@@ -122,6 +125,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies all spaces found if saved in the table")
         void findAll() {
             jdbcSpaceRepository.save(given);
             jdbcSpaceRepository.save(given2);
@@ -154,6 +158,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies correct updating user")
         void update() {
             User saved = jdbcUserRepository.save(given);
             saved.setEmail("new@mail.com");
@@ -164,6 +169,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test checks for correct deletion user")
         void delete() {
             User saved = jdbcUserRepository.save(given);
             jdbcUserRepository.delete(saved);
@@ -172,6 +178,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies user is found when exists in the table")
         void findById() {
             User saved = jdbcUserRepository.save(given);
             Optional<User> optional = jdbcUserRepository.findById(saved.getId());
@@ -180,6 +187,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test verifies all users found if saved in the table")
         void findAll() {
             User user1 = User.builder().email("email@mail.ru").password("password").build();
             jdbcUserRepository.save(user1);
@@ -214,6 +222,7 @@ public class PostgresTestContainer {
         }
 
         @Test
+        @DisplayName("test checks for correct deletion space")
         void delete() {
             jdbcBookingRepository.save(given);
             jdbcBookingRepository.delete(given);
@@ -223,7 +232,7 @@ public class PostgresTestContainer {
         }
 
         @Test
-        @DisplayName("")
+        @DisplayName("test verifies booking is found when exists in the table")
         void findById() {
             Booking saved = jdbcBookingRepository.save(given);
             Optional<Booking> found = jdbcBookingRepository.findById(saved.getId());
@@ -232,7 +241,7 @@ public class PostgresTestContainer {
         }
 
         @Test
-        @DisplayName("")
+        @DisplayName("test verifies all bookings found if saved in the table")
         void findAll() {
             Booking given2 = Booking.builder()
                     .timeStart(LocalDateTime.of(2024, 6, 29, 12, 0))
@@ -250,7 +259,7 @@ public class PostgresTestContainer {
         }
 
         @Test
-        @DisplayName("")
+        @DisplayName("test verifies correct updating booking")
         void update() {
             Booking booking = Booking.builder()
                     .isBooked(true)
