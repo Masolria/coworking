@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * The Booking entity.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,12 +17,30 @@ import java.util.Objects;
 @ToString
 
 public class Booking {
+    /**
+     *  The identifier for the booking record.
+     */
     private Long id;
+    /**
+     *  The field represents whether booking slot is free or not.
+     */
     private boolean isBooked;
+    /**
+     *  The opening date and time of the current booking slot.
+     */
     private LocalDateTime timeStart;
+    /**
+     *  The closing date and time of the current booking slot.
+     */
     private LocalDateTime timeEnd;
+    /**
+     *  The identifier of the space record for which the reservation is being made.
+     */
     private Long spaceId ;
-    //nullable
+    /**
+     *  The identifier of the user for which the reservation is being made.
+     *  May be nullable.
+     */
     private Long forUserId;
 
     @Override

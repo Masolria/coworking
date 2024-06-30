@@ -3,6 +3,9 @@ package com.masolria.entity;
 import lombok.*;
 import java.util.Objects;
 
+/**
+ * The Space entity.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,10 +13,18 @@ import java.util.Objects;
 @Builder
 @ToString
 public class Space {
+    /**
+     *  The identifier for the Space record.
+     */
     private Long id;
+    /**
+     *  The physical location described in the string.
+     */
     private String location;
+    /**
+     *  The type of space. WORKING_SPACE or CONFERENCE_HALL
+     */
     private SpaceType spaceType;
-    //вводишь время и название комнаты, если свободно-бронируется, если нет, то отказывается в брони(исключение)
 
     @Override
     public final boolean equals(Object o) {

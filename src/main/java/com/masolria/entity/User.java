@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.util.Objects;
 
+/**
+ * The type User.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,9 +14,17 @@ import java.util.Objects;
 @Builder
 @ToString
 public class User {
-
+    /**
+     *  The identifier for the User record.
+     */
     private Long id;
+    /**
+     *  The User email for authorization.
+     */
     private String email;
+    /**
+     *  The User password for authorization.
+     */
     private String password;
 
     @Override
