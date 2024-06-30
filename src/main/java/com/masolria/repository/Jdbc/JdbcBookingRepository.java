@@ -9,11 +9,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * The Jdbc booking repository. Performs CRUD operations for booking entries to the database.
+ * Postgresql dialect in all sql queries
+ */
 @RequiredArgsConstructor
 public class JdbcBookingRepository {
+    /**
+     * The field configures the connection to the database
+     */
     private final ConnectionManager cManager;
 
+    /**
+     * Deletes booking entry from table.
+     * @param booking the booking for deletion
+     */
     public void delete(Booking booking) {
         try (Connection connection = cManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.booking WHERE id = ?")) {
@@ -24,6 +34,12 @@ public class JdbcBookingRepository {
         }
     }
 
+    /**
+     * Finds booking by id.
+     * @param id the id
+     * @return the optional of its booking.
+     * Returns the empty optional if the booking entry doesn't exist in the table.
+     */
     public Optional<Booking> findById(Long id) {
         String sql = "SELECT * FROM coworking_schema.booking WHERE id = ?;";
         try (Connection connection = cManager.getConnection();
@@ -47,7 +63,11 @@ public class JdbcBookingRepository {
         }
         return Optional.empty();
     }
-
+    /**
+     * Finds all booking entries and puts them in a list
+     *
+     * @return the list with all booking entries available in the table
+     */
     public List<Booking> findAll() {
         String sql = "SELECT * FROM coworking_schema.booking;";
         try (Connection connection = cManager.getConnection();
@@ -72,6 +92,13 @@ public class JdbcBookingRepository {
         }
     }
 
+    /**
+     * Update booking. Retrieves id from the given booking and updates all fields in the table from it.
+     * if booking entry doesn't exist, method doesn't update any row in the table
+     * and returns given booking without any changes.
+     * @param booking the booking for update
+     * @return the booking
+     */
     public Booking update(Booking booking) {
         String sql = """
                 UPDATE coworking_schema.booking 
@@ -99,6 +126,12 @@ public class JdbcBookingRepository {
         return booking;
     }
 
+    /**
+     * Save booking to the table
+     *
+     * @param booking the booking for saving
+     * @return the booking with new id
+     */
     public Booking save(Booking booking) {
         String sql = """
                 INSERT INTO coworking_schema.booking(is_booked,time_start,time_end,space_id,for_user_id)

@@ -2,7 +2,6 @@ package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
-
 import com.masolria.db.ConnectionManager;
 import lombok.RequiredArgsConstructor;
 
@@ -12,11 +11,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Jdbc space repository.Performs CRUD operations for space entries to the database.
+ * Postgresql dialect in all sql queries.
+ */
 @RequiredArgsConstructor
 public class JdbcSpaceRepository {
-
+    /**
+     * The field configures the connection to the database
+     */
     private final ConnectionManager cManager;
 
+    /**
+     * Saves space to the table. Assigns the generated value to id
+     *
+     * @param space the space for saving
+     * @return the space with new id
+     */
     public Space save(Space space) {
         String sql = """
                 INSERT INTO coworking_schema.space(location, space_type)
@@ -41,6 +52,13 @@ public class JdbcSpaceRepository {
         return space;
     }
 
+    /**
+     * Updates space entry in the table.
+     * If row in the table with id of given space doesn't exist, then doesn't update any row.
+     *
+     * @param space the space
+     * @return the space object the same, unchanged.
+     */
     public Space update(Space space) {
         String sql = """
                 UPDATE coworking_schema.space
@@ -61,6 +79,11 @@ public class JdbcSpaceRepository {
         return space;
     }
 
+    /**
+     * Deletes space row from the table if exists. Otherwise, doesn't delete any.
+     *
+     * @param space the space for deletion
+     */
     public void delete(Space space) {
         try (Connection connection = cManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.space WHERE id = ?")) {
@@ -72,25 +95,37 @@ public class JdbcSpaceRepository {
 
     }
 
+    /**
+     * Finds row by space id and maps to the corresponding obj.
+     *
+     * @param id the id
+     * @return Optional object with a space if found. Otherwise, return empty optional.
+     */
     public Optional<Space> findById(Long id) {
         String sql = "SELECT * FROM coworking_schema.space WHERE id = ?;";
-        try(Connection connection = cManager.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-        preparedStatement.setLong(1, id);
+        try (Connection connection = cManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
 
-        ResultSet rs = preparedStatement.executeQuery();
-        if (rs.next()) {
-            return Optional.of(Space.builder()
-                    .id(rs.getLong("id"))
-                    .location(rs.getString("location"))
-                    .spaceType(SpaceType.valueOf(rs.getString("space_type")))
-                    .build());
-        }} catch (SQLException e) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return Optional.of(Space.builder()
+                        .id(rs.getLong("id"))
+                        .location(rs.getString("location"))
+                        .spaceType(SpaceType.valueOf(rs.getString("space_type")))
+                        .build());
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return Optional.empty();
     }
 
+    /**
+     * Find all records in the table and puts them in the list.
+     *
+     * @return the list with all available space entries.
+     */
     public List<Space> findAll() {
         String sql = "SELECT * FROM coworking_schema.space;";
         try (Connection connection = cManager.getConnection();

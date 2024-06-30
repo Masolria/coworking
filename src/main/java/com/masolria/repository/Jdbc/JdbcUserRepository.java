@@ -10,11 +10,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Jdbc user repository.
+ */
 @RequiredArgsConstructor
 public class JdbcUserRepository {
-
+    /**
+     * The field configures the connection to the database
+     */
     private final ConnectionManager cManager;
 
+    /**
+     * Deletes a user from the table
+     * if there is a row with the id of this user object.
+     *
+     * @param user the user for deletion
+     */
     public void delete(User user) {
         try (Connection connection = cManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.users WHERE id = ?")) {
@@ -26,6 +37,12 @@ public class JdbcUserRepository {
 
     }
 
+    /**
+     * Finds user by email.
+     *Returns optional with user if such row exist in the table. Otherwise, returns empty optional
+     * @param email the email
+     * @return the optional with user if exists.Otherwise, empty optional.
+     */
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM coworking_schema.users WHERE email = ?";
         try (Connection connection = cManager.getConnection();
@@ -45,6 +62,12 @@ public class JdbcUserRepository {
         return Optional.empty();
     }
 
+    /**
+     * Finds user row in the table by id.
+     * @param id the id
+     * @return the user optional if such row exists int the table.
+     *      * Otherwise, returns empty optional
+     */
     public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM coworking_schema.users WHERE id = ?;";
         try (Connection connection = cManager.getConnection();
@@ -65,6 +88,11 @@ public class JdbcUserRepository {
         return Optional.empty();
     }
 
+    /**
+     * Find all user rows and maps them to corresponding objects.
+     *
+     * @return the list with all available users in the table.
+     */
     public List<User> findAll() {
         String sql = "SELECT * FROM coworking_schema.users;";
         try (Connection connection = cManager.getConnection();
@@ -86,6 +114,12 @@ public class JdbcUserRepository {
         return Collections.emptyList();
     }
 
+    /**
+     * Saves user to the table.
+     *
+     * @param user the user
+     * @return the user with new id
+     */
     public User save(User user) {
         String sql = "INSERT INTO coworking_schema.users(email,password) VALUES (?, ?)";
         try (Connection connection = cManager.getConnection();
@@ -107,6 +141,12 @@ public class JdbcUserRepository {
         return user;
     }
 
+    /**
+     * Updates user entry in the table.
+     * If row in the table with id of given user doesn't exist, then doesn't update any row.
+     * @param user the user
+     * @return the user object the same, unchanged.
+     */
     public User update(User user) {
         String sql = """
                 UPDATE coworking_schema.users
