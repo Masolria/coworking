@@ -7,23 +7,23 @@ import java.util.Properties;
  * The Properties util class.
  * Loads properties from resources and gives properties values.
  */
-public class PropertiesUtil {
+public final class PropertiesUtil {
+    private PropertiesUtil() {
+    }
+
     /**
      * the object with properties
      */
-    private final Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
-    /**
-     * Instantiates a new Properties util.
-     */
-    public PropertiesUtil() {
-        this.loadProperties();
+    static {
+        loadProperties();
     }
 
     /**
      * Load properties from application.properties to the properties field.
      */
-    public void loadProperties() {
+    public static void loadProperties() {
 
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         String appConfigPath = rootPath + "application.properties";
@@ -40,7 +40,7 @@ public class PropertiesUtil {
      * @param key the String key of properties entry.
      * @return the property value
      */
-    public String getProperty(String key) {
+    public static String getProperty(String key) {
         return properties.getProperty(key);
     }
 }
