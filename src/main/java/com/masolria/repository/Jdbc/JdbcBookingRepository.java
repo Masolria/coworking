@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static com.masolria.repository.Jdbc.Queries.*;
+
 /**
  * The Jdbc booking repository. Performs CRUD operations for booking entries to the database.
  * Postgresql dialect in all sql queries
@@ -26,7 +29,7 @@ public class JdbcBookingRepository {
      */
     public void delete(Booking booking) {
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.booking WHERE id = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_DELETE)) {
             preparedStatement.setLong(1, booking.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -41,9 +44,8 @@ public class JdbcBookingRepository {
      * Returns the empty optional if the booking entry doesn't exist in the table.
      */
     public Optional<Booking> findById(Long id) {
-        String sql = "SELECT * FROM coworking_schema.booking WHERE id = ?;";
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
@@ -58,6 +60,7 @@ public class JdbcBookingRepository {
                         .build()
                 );
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -69,10 +72,9 @@ public class JdbcBookingRepository {
      * @return the list with all booking entries available in the table
      */
     public List<Booking> findAll() {
-        String sql = "SELECT * FROM coworking_schema.booking;";
         try (Connection connection = cManager.getConnection();
              Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery(BOOKING_FIND_ALL);
             List<Booking> bookings = new ArrayList<>();
             while (rs.next()) {
                 Booking booking = Booking.builder()
@@ -85,6 +87,7 @@ public class JdbcBookingRepository {
                         .build();
                 bookings.add(booking);
             }
+            rs.close();
             return bookings;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,17 +103,8 @@ public class JdbcBookingRepository {
      * @return the booking
      */
     public Booking update(Booking booking) {
-        String sql = """
-                UPDATE coworking_schema.booking 
-                SET is_Booked = ?,
-                time_start = ?,
-                time_end = ?,
-                space_id = ?,
-                for_user_id = ?
-                WHERE id = ? ;
-                """;
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)
+             PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_UPDATE)
         ) {
             preparedStatement.setBoolean(1, booking.isBooked());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(booking.getTimeStart()));
@@ -133,12 +127,8 @@ public class JdbcBookingRepository {
      * @return the booking with new id
      */
     public Booking save(Booking booking) {
-        String sql = """
-                INSERT INTO coworking_schema.booking(is_booked,time_start,time_end,space_id,for_user_id)
-                VALUES(?,?,?,?,?);
-                """;
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_SAVE, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setBoolean(1, booking.isBooked());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(booking.getTimeStart()));
@@ -152,6 +142,7 @@ public class JdbcBookingRepository {
             } else {
                 throw new SQLException("Creating booking failed, no ID obtained.");
             }
+            rs.close();
             return booking;
         }catch (SQLException e){
             e.printStackTrace();

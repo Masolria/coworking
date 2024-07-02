@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.masolria.repository.Jdbc.Queries.*;
+
 /**
  * The type Jdbc user repository.
  */
@@ -28,7 +30,7 @@ public class JdbcUserRepository {
      */
     public void delete(User user) {
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.users WHERE id = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(USER_DELETE)) {
             preparedStatement.setLong(1, user.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -69,9 +71,8 @@ public class JdbcUserRepository {
      *      * Otherwise, returns empty optional
      */
     public Optional<User> findById(Long id) {
-        String sql = "SELECT * FROM coworking_schema.users WHERE id = ?;";
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(USER_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
@@ -94,10 +95,9 @@ public class JdbcUserRepository {
      * @return the list with all available users in the table.
      */
     public List<User> findAll() {
-        String sql = "SELECT * FROM coworking_schema.users;";
         try (Connection connection = cManager.getConnection();
              Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery(USER_FIND_ALL);
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
                 User user = User.builder()
@@ -107,6 +107,7 @@ public class JdbcUserRepository {
                         .build();
                 users.add(user);
             }
+            resultSet.close();
             return users;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,19 +122,19 @@ public class JdbcUserRepository {
      * @return the user with new id
      */
     public User save(User user) {
-        String sql = "INSERT INTO coworking_schema.users(email,password) VALUES (?, ?)";
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql,
+             PreparedStatement preparedStatement = connection.prepareStatement(USER_SAVE,
                      Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                user.setId(rs.getLong(1));
-            } else {
-                throw new SQLException("Creating booking failed, no ID obtained.");
+            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    user.setId(rs.getLong(1));
+                } else {
+                    throw new SQLException("Creating booking failed, no ID obtained.");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,13 +149,8 @@ public class JdbcUserRepository {
      * @return the user object the same, unchanged.
      */
     public User update(User user) {
-        String sql = """
-                UPDATE coworking_schema.users
-                SET email = ?, password = ?
-                WHERE id = ?
-                """;
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(USER_UPDATE)) {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setLong(3,user.getId());

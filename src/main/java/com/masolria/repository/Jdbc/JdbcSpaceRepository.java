@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.masolria.repository.Jdbc.Queries.*;
 /**
  * The Jdbc space repository.Performs CRUD operations for space entries to the database.
  * Postgresql dialect in all sql queries.
@@ -29,12 +30,8 @@ public class JdbcSpaceRepository {
      * @return the space with new id
      */
     public Space save(Space space) {
-        String sql = """
-                INSERT INTO coworking_schema.space(location, space_type)
-                VALUES(?,?::space_type);
-                """;
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql,
+             PreparedStatement preparedStatement = connection.prepareStatement(SPACE_INSERT,
                      Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, space.getLocation());
@@ -43,7 +40,10 @@ public class JdbcSpaceRepository {
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
                 space.setId(rs.getLong(1));
-            } else {
+                rs.close();
+            }
+            else {
+                rs.close();
                 throw new SQLException("Creating booking failed, no ID obtained.");
             }
         } catch (SQLException e) {
@@ -67,7 +67,7 @@ public class JdbcSpaceRepository {
                 """;
         PreparedStatement preparedStatement;
         try (Connection connection = cManager.getConnection()) {
-            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(SPACE_UPDATE);
             preparedStatement.setString(1, space.getLocation());
             preparedStatement.setString(2, space.getSpaceType().name());
             preparedStatement.setLong(3, space.getId());
@@ -86,7 +86,7 @@ public class JdbcSpaceRepository {
      */
     public void delete(Space space) {
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM coworking_schema.space WHERE id = ?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SPACE_DELETE)) {
             preparedStatement.setLong(1, space.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -102,19 +102,21 @@ public class JdbcSpaceRepository {
      * @return Optional object with a space if found. Otherwise, return empty optional.
      */
     public Optional<Space> findById(Long id) {
-        String sql = "SELECT * FROM coworking_schema.space WHERE id = ?;";
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SPACE_DELETE)) {
             preparedStatement.setLong(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return Optional.of(Space.builder()
+
+                Optional<Space> optionalSpace = Optional.of(Space.builder()
                         .id(rs.getLong("id"))
                         .location(rs.getString("location"))
                         .spaceType(SpaceType.valueOf(rs.getString("space_type")))
                         .build());
+                return optionalSpace;
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -127,10 +129,9 @@ public class JdbcSpaceRepository {
      * @return the list with all available space entries.
      */
     public List<Space> findAll() {
-        String sql = "SELECT * FROM coworking_schema.space;";
         try (Connection connection = cManager.getConnection();
              Statement statement = connection.createStatement()) {
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery(SPACE_FIND_ALL);
             List<Space> spaces = new ArrayList<>();
             while (rs.next()) {
                 Space space = Space.builder()
@@ -140,6 +141,7 @@ public class JdbcSpaceRepository {
                         .build();
                 spaces.add(space);
             }
+            rs.close();
             return spaces;
         } catch (SQLException e) {
             e.printStackTrace();
