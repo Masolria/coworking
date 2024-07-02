@@ -1,5 +1,6 @@
 package com.masolria.db;
 
+import com.masolria.util.PropertiesUtil;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -32,7 +33,7 @@ public class LiquibaseRunner {
                     .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             preparedStatement.execute();
             database.setLiquibaseSchemaName("migration");
-            Liquibase liquibase = new Liquibase("db/changelog/db.changelog-master.yaml",
+            Liquibase liquibase = new Liquibase(PropertiesUtil.getProperty("liquibase.changelogFile"),
                     new ClassLoaderResourceAccessor(),database);
             liquibase.update();
         } catch (SQLException | LiquibaseException e) {
