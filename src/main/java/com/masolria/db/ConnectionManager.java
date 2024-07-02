@@ -11,15 +11,15 @@ public class ConnectionManager {
     /**
      * The Url of the connection.
      */
-    String URL;
+    private final String url;
     /**
      * The User of the connection.
      */
-    String USER;
+    private final String user;
     /**
      * The Password of the connection.
      */
-    String PASSWORD;
+    private final String password;
 
     /**
      * Instantiates a new Connection manager.
@@ -29,9 +29,9 @@ public class ConnectionManager {
      * @param password the password
      */
     public ConnectionManager(String url,String user,String password){
-        URL = url;
-        USER = user;
-        PASSWORD = password;
+        this.url = url;
+        this.user = user;
+        this.password = password;
     }
 
     /**
@@ -41,8 +41,8 @@ public class ConnectionManager {
      * @throws SQLException the sql exception
      */
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL,
-                USER,
-                PASSWORD);
+        return DriverManager.getConnection(url,
+                user,
+                password);
     }
 }
