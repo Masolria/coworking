@@ -20,12 +20,13 @@
         <liquibase.version>4.27.0</liquibase.version>
         <postgresql.version>42.7.3</postgresql.version>
         <testcontainers.version>1.19.8</testcontainers.version>
+
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.19.8</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
