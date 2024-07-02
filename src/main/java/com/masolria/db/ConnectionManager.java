@@ -1,5 +1,7 @@
 package com.masolria.db;
 
+import lombok.RequiredArgsConstructor;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,6 +9,7 @@ import java.sql.SQLException;
 /**
  * The Connection manager configures connection to the database.
  */
+@RequiredArgsConstructor
 public class ConnectionManager {
     /**
      * The Url of the connection.
@@ -28,11 +31,6 @@ public class ConnectionManager {
      * @param user     the user
      * @param password the password
      */
-    public ConnectionManager(String url,String user,String password){
-        this.url = url;
-        this.user = user;
-        this.password = password;
-    }
 
     /**
      * Provides connection.Invokes DriverManager getConnection() with given url, user and password
