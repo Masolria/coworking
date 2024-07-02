@@ -13,10 +13,11 @@ import com.masolria.service.SpaceService;
 import com.masolria.service.UserService;
 import com.masolria.db.ConnectionManager;
 import com.masolria.db.LiquibaseRunner;
-import com.masolria.util.PropertiesUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.masolria.util.PropertiesUtil.getProperty;
 
 /**
  * The type App context.
@@ -91,12 +92,9 @@ public class AppContext {
      * @return A ConnectionManager instance configured with database properties.
      */
     public static ConnectionManager loadPropertiesToConnectionManager() {
-        PropertiesUtil propertiesUtil = new PropertiesUtil();
-
-        propertiesUtil.loadProperties();
-        String url = propertiesUtil.getProperty("postgres.url");
-        String user = propertiesUtil.getProperty("postgres.user");
-        String password = propertiesUtil.getProperty("postgres.password");
+        String url = getProperty("postgres.url");
+        String user = getProperty("postgres.user");
+        String password = getProperty("postgres.password");
         return new ConnectionManager(url, user, password);
     }
 }
