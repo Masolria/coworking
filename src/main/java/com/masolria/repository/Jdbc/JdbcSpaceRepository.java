@@ -37,14 +37,13 @@ public class JdbcSpaceRepository {
             preparedStatement.setString(1, space.getLocation());
             preparedStatement.setString(2, space.getSpaceType().name());
             preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                space.setId(rs.getLong(1));
-                rs.close();
-            }
-            else {
-                rs.close();
-                throw new SQLException("Creating booking failed, no ID obtained.");
+            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    space.setId(rs.getLong(1));
+                } else {
+                    rs.close();
+                    throw new SQLException("Creating booking failed, no ID obtained.");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,17 +105,17 @@ public class JdbcSpaceRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(SPACE_DELETE)) {
             preparedStatement.setLong(1, id);
 
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
 
-                Optional<Space> optionalSpace = Optional.of(Space.builder()
-                        .id(rs.getLong("id"))
-                        .location(rs.getString("location"))
-                        .spaceType(SpaceType.valueOf(rs.getString("space_type")))
-                        .build());
-                return optionalSpace;
+                    Optional<Space> optionalSpace = Optional.of(Space.builder()
+                            .id(rs.getLong("id"))
+                            .location(rs.getString("location"))
+                            .spaceType(SpaceType.valueOf(rs.getString("space_type")))
+                            .build());
+                    return optionalSpace;
+                }
             }
-            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

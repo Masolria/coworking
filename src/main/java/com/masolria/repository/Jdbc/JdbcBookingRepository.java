@@ -48,19 +48,19 @@ public class JdbcBookingRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return Optional.of(Booking.builder()
-                        .id(rs.getLong("id"))
-                        .isBooked(rs.getBoolean("is_booked"))
-                        .spaceId(rs.getLong("space_id"))
-                        .timeStart(rs.getTimestamp("time_start").toLocalDateTime())
-                        .timeEnd(rs.getTimestamp("time_end").toLocalDateTime())
-                        .forUserId(rs.getLong("for_user_id"))
-                        .build()
-                );
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(Booking.builder()
+                            .id(rs.getLong("id"))
+                            .isBooked(rs.getBoolean("is_booked"))
+                            .spaceId(rs.getLong("space_id"))
+                            .timeStart(rs.getTimestamp("time_start").toLocalDateTime())
+                            .timeEnd(rs.getTimestamp("time_end").toLocalDateTime())
+                            .forUserId(rs.getLong("for_user_id"))
+                            .build()
+                    );
+                }
             }
-            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -136,13 +136,13 @@ public class JdbcBookingRepository {
             preparedStatement.setLong(4, booking.getSpaceId());
             preparedStatement.setLong(5, booking.getForUserId());
             preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                booking.setId(rs.getLong(1));
-            } else {
-                throw new SQLException("Creating booking failed, no ID obtained.");
+            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    booking.setId(rs.getLong(1));
+                } else {
+                    throw new SQLException("Creating booking failed, no ID obtained.");
+                }
             }
-            rs.close();
             return booking;
         }catch (SQLException e){
             e.printStackTrace();

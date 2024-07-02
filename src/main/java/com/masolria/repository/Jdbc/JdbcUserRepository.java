@@ -50,13 +50,14 @@ public class JdbcUserRepository {
         try (Connection connection = cManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return Optional.of(User.builder()
-                        .id(rs.getLong("id"))
-                        .email(rs.getString("email"))
-                        .password(rs.getString("password"))
-                        .build());
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(User.builder()
+                            .id(rs.getLong("id"))
+                            .email(rs.getString("email"))
+                            .password(rs.getString("password"))
+                            .build());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,13 +76,14 @@ public class JdbcUserRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(USER_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return Optional.of(User.builder()
-                        .id(rs.getLong("id"))
-                        .email(rs.getString("email"))
-                        .password(rs.getString("password"))
-                        .build());
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(User.builder()
+                            .id(rs.getLong("id"))
+                            .email(rs.getString("email"))
+                            .password(rs.getString("password"))
+                            .build());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
