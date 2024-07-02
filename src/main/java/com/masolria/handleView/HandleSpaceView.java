@@ -11,7 +11,17 @@ import com.masolria.out.Output;
 
 import java.util.List;
 
+/**
+ * Handles the view logic for Space operations in the console application.
+ */
 public class HandleSpaceView {
+    /**
+     * Prompts the user to input information and saves a new space.
+     *
+     * @param input      The input object for user interaction.
+     * @param output     The output object for displaying messages.
+     * @param controller The controller object for handling business logic.
+     */
     public static void showSave(Input input, Output output, ConsoleController controller) {
         String spaceOutput = """
                 Write the id of space you want to :
@@ -24,9 +34,9 @@ public class HandleSpaceView {
         String stringType = input.input();
         SpaceType spaceType;
         if ("1".equals(stringType)) {
-            spaceType = SpaceType.WorkingSpace;
+            spaceType = SpaceType.WORKING_SPACE;
         } else if (stringType.equals("2")) {
-            spaceType = SpaceType.ConferenceHall;
+            spaceType = SpaceType.CONFERENCE_HALL;
         }else {
             output.output("Cannot add space with given type");
             return;
@@ -41,6 +51,12 @@ public class HandleSpaceView {
         output.output("Your space added successfully");
     }
 
+    /**
+     * Displays all existing spaces.
+     *
+     * @param output     The output object for displaying messages.
+     * @param controller The controller object for handling business logic.
+     */
     public static void showWatchAll(Output output, ConsoleController controller) {
         String preWatchAll = """
                 There are all existing conference halls and working spaces
@@ -51,7 +67,15 @@ public class HandleSpaceView {
             output.output(space.toString());
         }
     }
-    //TODO использовать в консоли
+    /**
+     * Prompts the user to input the ID of the space to delete and deletes it.
+     *
+     * @param input      The input object for user interaction.
+     * @param output     The output object for displaying messages.
+     * @param controller The controller object for handling business logic.
+     * @return The next application state.
+     */
+//TODO использовать в консоли
     public static AppState delete(Input input, Output output, ConsoleController controller) {
         String preDeletion =
                 """
@@ -66,6 +90,4 @@ public class HandleSpaceView {
         }
         return AppState.MENU;
     }
-
-
 }

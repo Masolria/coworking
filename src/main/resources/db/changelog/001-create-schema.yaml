@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Maria_solsol
+      changes:
+        - sql:
+            sql: CREATE SCHEMA coworking_schema
+            endDelimiter: ';'
+            dbms: 'postgresql'
+      rollback:
+        - sql:
+            sql: DROP SCHEMA coworking_schema
+            endDelimiter: ';'
+            dbms: 'postgresql'

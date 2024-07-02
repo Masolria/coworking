@@ -1,0 +1,114 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Maria_solsol
+      changes:
+        - createTable:
+            schemaName: coworking_schema
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                     primaryKey: true
+                     nullable: false
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
+              - column:
+                  name: email
+                  type: VARCHAR(320)
+                  constraints:
+                     nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR
+                  constraints:
+                     nullable: false
+      rollback:
+        - dropTable:
+            tableName: users
+  - changeSet:
+      id: 4
+      author: Maria_solsol
+      changes:
+        - sql:
+            endDelimiter: ';'
+            dbms: 'postgresql'
+            sql: CREATE TYPE space_type AS ENUM( 'WORKING_SPACE','CONFERENCE_HALL')
+
+      rollback:
+        - sql:
+            endDelimiter: ';'
+            dbms: 'postgresql'
+            sql: DROP TYPE space_type;
+  - changeSet:
+      id: 5
+      author: Maria_solsol
+      changes:
+        - createTable:
+            tableName: space
+            schemaName: coworking_schema
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                     primaryKey: true
+                     nullable: false
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+                  constraints:
+                     nullable: false
+              - column:
+                  name: space_type
+                  type: space_type
+                  constraints:
+                     nullable: false
+      rollback:
+        - dropTable:
+            tableName: space
+  - changeSet:
+      id: 6
+      author: Maria_solsol
+      changes:
+        - createTable:
+            tableName: booking
+            schemaName: coworking_schema
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                     primaryKey: true
+                     nullable: false
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
+              - column:
+                  name: is_booked
+                  type: BOOLEAN
+                  constraints:
+                     nullable: false
+              - column:
+                  name: time_start
+                  type: TIMESTAMP
+                  constraints:
+                     nullable: false
+              - column:
+                  name: time_end
+                  type: TIMESTAMP
+                  constraints:
+                     nullable: false
+              - column:
+                  name: space_id
+                  type: BIGINT
+                  constraints:
+                     nullable: false
+              - column:
+                  name: for_user_id
+                  type: BIGINT
+                  constraints:
+                     nullable: true
+      rollback:
+        - dropTable:
+            tableName: booking

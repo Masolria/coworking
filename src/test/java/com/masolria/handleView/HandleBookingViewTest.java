@@ -1,13 +1,15 @@
 package com.masolria.handleView;
 
 import com.masolria.AppContext;
-import com.masolria.InputOutput.Input;
-import com.masolria.InputOutput.Output;
+
 import com.masolria.controller.ConsoleController;
 import com.masolria.entity.Booking;
+import com.masolria.entity.SpaceType;
 import com.masolria.entity.User;
-import com.masolria.entity.enums.SpaceType;
+
 import com.masolria.exception.OccupiedConflictException;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +61,7 @@ class HandleBookingViewTest {
     void showByType() {
         when(input.input()).thenReturn("1");//working space
         Booking b1 = Booking.builder().build();
-        when(controller.getAllBookingByType(SpaceType.WorkingSpace))
+        when(controller.getAllBookingByType(SpaceType.WORKING_SPACE))
                 .thenReturn(List.of(b1));
 
         HandleBookingView.ShowByType(input, output, controller);
@@ -76,7 +78,7 @@ class HandleBookingViewTest {
     @DisplayName("The test verifies that output for given date is correct.input format yyyy mm dd e.g. 2024 01 01")
     void showByDate() {
         when(input.input()).thenReturn("2024 01 21");
-        Booking b1 = Booking.builder().bookingTimeStart(LocalDateTime.of(2024, 1, 21, 12, 0)).build();
+        Booking b1 = Booking.builder().timeStart(LocalDateTime.of(2024, 1, 21, 12, 0)).build();
 
         when(controller.getBookingByDate(LocalDate.of(2024, 1, 21))).thenReturn(List.of(b1));
         HandleBookingView.ShowByDate(input, output, controller);
@@ -127,7 +129,7 @@ class HandleBookingViewTest {
                  "because the input slot id may not belong to them")
     void showReleaseBooking() {
         when(input.input()).thenReturn("1");
-        Booking booking = Booking.builder().id(1L).bookedForUserId(3L).isBooked(true).build();
+        Booking booking = Booking.builder().id(1L).forUserId(3L).isBooked(true).build();
         when(controller.getBookingById(1L)).thenReturn(Optional.of(booking));
 
         try (MockedStatic<AppContext> mockedStatic = Mockito.mockStatic(AppContext.class)) {

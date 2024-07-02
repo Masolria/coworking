@@ -1,9 +1,10 @@
 package com.masolria.handleView;
 
-import com.masolria.InputOutput.Input;
-import com.masolria.InputOutput.Output;
+
 import com.masolria.controller.ConsoleController;
 import com.masolria.entity.User;
+import com.masolria.in.Input;
+import com.masolria.out.Output;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
