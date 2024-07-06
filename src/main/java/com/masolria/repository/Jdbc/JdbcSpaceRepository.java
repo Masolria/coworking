@@ -59,11 +59,6 @@ public class JdbcSpaceRepository {
      * @return the space object the same, unchanged.
      */
     public Space update(Space space) {
-        String sql = """
-                UPDATE coworking_schema.space
-                SET location = ?, space_type = ?::space_type
-                WHERE id = ?
-                """;
         PreparedStatement preparedStatement;
         try (Connection connection = cManager.getConnection()) {
             preparedStatement = connection.prepareStatement(SPACE_UPDATE);
@@ -102,18 +97,16 @@ public class JdbcSpaceRepository {
      */
     public Optional<Space> findById(Long id) {
         try (Connection connection = cManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SPACE_DELETE)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SPACE_GET_BY_ID)) {
             preparedStatement.setLong(1, id);
-
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
 
-                    Optional<Space> optionalSpace = Optional.of(Space.builder()
+                    return Optional.of(Space.builder()
                             .id(rs.getLong("id"))
                             .location(rs.getString("location"))
                             .spaceType(SpaceType.valueOf(rs.getString("space_type")))
                             .build());
-                    return optionalSpace;
                 }
             }
         } catch (SQLException e) {
