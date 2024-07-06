@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 9
+      author: Maria_solsol
+      changes:
+        - createTable:
+            schemaName: coworking_schema
+            tableName: audit
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueComputed: nextval('coworking_schema.id_seq')
+              - column:
+                  name: user_email
+                  type: VARCHAR(320)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+              - column:
+                  name: when_executed
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: audit
