@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masolria.dto.SpaceDto;
 import com.masolria.exception.EntityDeletionException;
 import com.masolria.exception.EntityNotFoundException;
+import com.masolria.exception.ValidationException;
 import com.masolria.service.SpaceService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -39,7 +40,10 @@ public class SpaceServlet extends HttpServlet {
             spaceService.save(spaceDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write("Space entry successfully saved.");
-        } catch (RuntimeException e) {
+        } catch (ValidationException e){
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("Input is invalid");
+        }catch (RuntimeException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(e.getMessage());
         }
