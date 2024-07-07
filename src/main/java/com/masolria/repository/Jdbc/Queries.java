@@ -16,6 +16,10 @@ public class Queries {
     protected static final String SPACE_FIND_ALL = """
             SELECT * FROM coworking_schema.space;
             """;
+    protected static final String SPACE_GET_BY_ID = """
+                        SELECT * FROM coworking_schema.space WHERE id = ?;
+
+            """;
     protected static final String USER_DELETE = """
             DELETE FROM coworking_schema.users WHERE id = ?
             """;
@@ -54,5 +58,15 @@ public class Queries {
     protected static final String BOOKING_SAVE = """
             INSERT INTO coworking_schema.booking(is_booked,time_start,time_end,space_id,for_user_id)
             VALUES(?,?,?,?,?);
+            """;
+    protected static final String AUDIT_SAVE = """
+            INSERT INTO coworking_schema.audit(user_email, message, when_executed)
+            VALUES(?,?,?);
+            """;
+    protected static final String AUDIT_FIND_ALL = """
+            SELECT * FROM coworking_schema.audit;
+            """;
+    protected static final String AUDIT_FIND_BY_ID = """
+            SELECT * FROM coworking_schema.audit WHERE id = ?;
             """;
 }
