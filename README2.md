@@ -3,11 +3,13 @@
 Firstly you must register if you haven't done so before and log in.
 
 - `POST /login`
+- `POST /register`
   `` json for log in:``
   {
   "email":"default@email.com",
   "password":"password"
   }
+
 
 and then you are allowed to interact.
 - `GET /space-all` - obtain all space entries
@@ -22,6 +24,13 @@ and then you are allowed to interact.
   }
 - `GET, DELETE /booking` - deletion, and getting by id bookings
 - `POST /booking` - add new entry to the booking table
-- `GET /booking-free` - 
-
-
+- `GET /booking-free` - shows all free booking slots
+- `POST /booking-by-date` - shows all booking by date
+  {
+  "date":"2024 02 06"
+  }
+- `PUT /booking-reserve` reserves a slot with given id if it's free
+- `PUT /booking-release` releases a slot with given id
+  {
+  "id":100005
+  }
