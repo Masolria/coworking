@@ -1,7 +1,7 @@
 package com.masolria.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.masolria.AuthenticationEntry;
+import com.masolria.dto.AuthenticationEntry;
 import com.masolria.dto.UserDto;
 import com.masolria.exception.EntityNotFoundException;
 import com.masolria.service.EntryService;
@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 
-@WebServlet(name = "LoginServlet", value = "/login")
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     EntryService entryService;
     private ObjectMapper objectMapper;
@@ -34,10 +34,10 @@ public class LoginServlet extends HttpServlet {
         try (InputStream inputStream = req.getInputStream()) {
             AuthenticationEntry auth = objectMapper.readValue(inputStream, AuthenticationEntry.class);
             UserDto userDto = entryService.authorize(auth);
-
-            getServletContext().setAttribute("user", userDto);
+            req.getSession().setAttribute("user", userDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write("You are authorized successfully.");
+            resp.getWriter().write(objectMapper.writeValueAsString(userDto));
         } catch (EntityNotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.getWriter().write("user with given email doesn't exist");

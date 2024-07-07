@@ -74,11 +74,12 @@ public class AppContextListener implements ServletContextListener {
         UserService userService = new UserService(new JdbcUserRepository(cManager),
                 (UserMapper) sc.getAttribute("userMapper"),
                 (UserListMapper) sc.getAttribute("userListMapper"));
-        EntryService entryService = new EntryService(userService);
+
+        EntryService entryService = new EntryService(userService,(UserMapper) sc.getAttribute("userMapper"));
         sc.setAttribute("spaceService", spaceService);
         sc.setAttribute("bookingService", bookingService);
         sc.setAttribute("userService",userService);
-        sc.setAttribute("entryService,",entryService);
+        sc.setAttribute("entryService",entryService);
     }
     private void liquibaseConfigure(ServletContext sc){
         LiquibaseRunner liquibaseRunner = new LiquibaseRunner((ConnectionManager) sc.getAttribute("connectionManager"));

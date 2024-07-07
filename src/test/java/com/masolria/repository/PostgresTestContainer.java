@@ -38,7 +38,8 @@ public class PostgresTestContainer {
         ConnectionManager cManager = new ConnectionManager(
                 postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
+                postgres.getPassword(),
+                postgres.getDriverClassName()
         );
         LiquibaseRunner testMigration = new LiquibaseRunner(cManager);
         testMigration.runMigration();
@@ -55,7 +56,8 @@ public class PostgresTestContainer {
         ConnectionManager cManager = new ConnectionManager(
                 postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
+                postgres.getPassword(),
+                postgres.getDriverClassName()
         );
         try (Connection connection = cManager.getConnection()) {
             Statement statement = connection.createStatement();
@@ -79,7 +81,8 @@ public class PostgresTestContainer {
             ConnectionManager cManager = new ConnectionManager(
                     postgres.getJdbcUrl(),
                     postgres.getUsername(),
-                    postgres.getPassword()
+                    postgres.getPassword(),
+                    postgres.getDriverClassName()
             );
             jdbcSpaceRepository = new JdbcSpaceRepository(cManager);
             given = Space.builder().location("unknown").spaceType(SpaceType.CONFERENCE_HALL).build();
@@ -144,7 +147,8 @@ public class PostgresTestContainer {
             ConnectionManager cManager = new ConnectionManager(
                     postgres.getJdbcUrl(),
                     postgres.getUsername(),
-                    postgres.getPassword()
+                    postgres.getPassword(),
+                    postgres.getDriverClassName()
             );
             jdbcUserRepository = new JdbcUserRepository(cManager);
         }
@@ -208,7 +212,8 @@ public class PostgresTestContainer {
             ConnectionManager cManager = new ConnectionManager(
                     postgres.getJdbcUrl(),
                     postgres.getUsername(),
-                    postgres.getPassword()
+                    postgres.getPassword(),
+                    postgres.getDriverClassName()
             );
             jdbcBookingRepository = new JdbcBookingRepository(cManager);
              given = Booking.builder()

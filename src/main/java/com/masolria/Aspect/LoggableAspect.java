@@ -8,12 +8,15 @@ import org.aspectj.lang.annotation.*;
 @Slf4j
 public class LoggableAspect {
 
-    @Pointcut("@annotation(com.masolria.annotations.Loggable) && execution (* *(..))")
+    @Pointcut("@annotation(com.masolria.annotations.Loggable)")
     public void loggableMethods() {
     }
 
-    @Around("loggableMethods")
+
+
+    @Around("loggableMethods()")
     public Object logExecutionTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        System.out.println("log working");
         String signature = proceedingJoinPoint.getSignature().
                 toShortString();
         long start = System.currentTimeMillis();

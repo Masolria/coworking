@@ -1,7 +1,7 @@
 package com.masolria.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.masolria.AuthenticationEntry;
+import com.masolria.dto.AuthenticationEntry;
 import com.masolria.dto.UserDto;
 import com.masolria.exception.AlreadyRegisteredException;
 import com.masolria.service.EntryService;
@@ -34,7 +34,7 @@ public class RegisterServlet extends HttpServlet {
 
             AuthenticationEntry auth = mapper.readValue(inputStream, AuthenticationEntry.class);
             UserDto userDto = entryService.register(auth);
-            getServletContext().setAttribute("user", userDto);
+            req.getSession().setAttribute("user", userDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write("You are registered successfully.");
         }catch (AlreadyRegisteredException e){

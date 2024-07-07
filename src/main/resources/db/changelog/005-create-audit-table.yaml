@@ -3,6 +3,20 @@ databaseChangeLog:
       id: 9
       author: Maria_solsol
       changes:
+          - sql:
+              endDelimiter: ';'
+              dbms: 'postgresql'
+              sql: CREATE TYPE audit_type AS ENUM( 'SUCCESS','FAIL')
+
+      rollback:
+          - sql:
+              endDelimiter: ';'
+              dbms: 'postgresql'
+              sql: DROP TYPE audit_type;
+  - changeSet:
+      id: 10
+      author: Maria_solsol
+      changes:
         - createTable:
             schemaName: coworking_schema
             tableName: audit
@@ -17,11 +31,14 @@ databaseChangeLog:
               - column:
                   name: user_email
                   type: VARCHAR(320)
-                  constraints:
-                    nullable: false
               - column:
                   name: message
                   type: VARCHAR
+                  constraints:
+                    nullable: false
+              - column:
+                  name: audit_type
+                  type: audit_type
                   constraints:
                     nullable: false
               - column:

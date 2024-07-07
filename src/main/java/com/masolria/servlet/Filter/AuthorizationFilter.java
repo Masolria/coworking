@@ -15,10 +15,11 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String uri = ((HttpServletRequest) request).getRequestURI();
+        System.out.println(uri);
         if (isPublicPath(uri) || isUserLoggedIn(request)) {
             chain.doFilter(request, response);
         } else {
-            ((HttpServletResponse)response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+            ((HttpServletResponse)response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Access denied.");
         }
 
