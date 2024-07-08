@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
             UserDto userDto = entryService.authorize(auth);
             req.getSession().setAttribute("user", userDto);
             UserStoreUtil.setUserAuthorized(userDto);
-            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write("You are authorized successfully.");
             resp.getWriter().write(objectMapper.writeValueAsString(userDto));
         } catch (EntityNotFoundException e) {
