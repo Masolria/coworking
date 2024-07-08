@@ -1,0 +1,9 @@
+<aspectj>
+<aspects>
+    <aspect name="com.masolria.aspect.LoggableAspect"/>
+    <aspect name="com.masolria.aspect.AuditableAspect"/>
+</aspects>
+<weaver>
+<include within="com.masolria..*"/>
+</weaver>
+        </aspectj>
