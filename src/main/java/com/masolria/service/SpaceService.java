@@ -3,6 +3,7 @@ package com.masolria.service;
 import com.masolria.Mapper.SpaceListMapper;
 import com.masolria.Mapper.SpaceMapper;
 import com.masolria.annotations.Auditable;
+import com.masolria.annotations.Loggable;
 import com.masolria.dto.SpaceDto;
 import com.masolria.entity.Space;
 import com.masolria.exception.EntityDeletionException;
@@ -20,6 +21,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 @Auditable
+@Loggable
 public class SpaceService {
     private final SpaceMapper mapper;
     private final SpaceListMapper listMapper;
@@ -49,8 +51,7 @@ public class SpaceService {
         Optional<Space> optionalSpace = spaceRepository.findById(id);
         if (optionalSpace.isPresent()) {
             Space space = optionalSpace.get();
-            SpaceDto spaceDto = mapper.toDto(space);
-            return spaceDto;
+            return mapper.toDto(space);
         } else throw new EntityNotFoundException();
     }
 

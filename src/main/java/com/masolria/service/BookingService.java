@@ -3,6 +3,7 @@ package com.masolria.service;
 import com.masolria.Mapper.BookingListMapper;
 import com.masolria.Mapper.BookingMapper;
 import com.masolria.annotations.Auditable;
+import com.masolria.annotations.Loggable;
 import com.masolria.dto.BookingDto;
 import com.masolria.dto.SpaceDto;
 import com.masolria.entity.Booking;
@@ -24,6 +25,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 @Auditable
+@Loggable
 public class BookingService {
     /**
      * The Booking repository.

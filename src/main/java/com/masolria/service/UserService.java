@@ -1,12 +1,14 @@
 package com.masolria.service;
 
+import com.masolria.annotations.Auditable;
+import com.masolria.annotations.Loggable;
 import com.masolria.dto.AuthenticationEntry;
 import com.masolria.Mapper.UserListMapper;
 import com.masolria.Mapper.UserMapper;
 import com.masolria.dto.UserDto;
 import com.masolria.entity.User;
 import com.masolria.exception.EntityNotFoundException;
-import com.masolria.exception.UserEmailBusyException;
+import com.masolria.exception.EmailAlreadyInUseException;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
 import lombok.AllArgsConstructor;
 
@@ -17,6 +19,8 @@ import java.util.Optional;
  * The User service.
  */
 @AllArgsConstructor
+@Auditable
+@Loggable
 public class UserService {
     /**
      * The User repository.
@@ -58,12 +62,12 @@ public class UserService {
      * @param user The user to be saved.
      * @return The saved user.
      */
-    public UserDto save(AuthenticationEntry entry) throws UserEmailBusyException{
+    public UserDto save(AuthenticationEntry entry) throws EmailAlreadyInUseException {
         if (userRepository.findByEmail(entry.email()).isEmpty()) {
             User user = User.builder().password(entry.password()).email(entry.email()).build();
             userRepository.save(user);
             return mapper.toDto(user);
-        } else throw new UserEmailBusyException();
+        } else throw new EmailAlreadyInUseException();
     }
 
     /**

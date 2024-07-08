@@ -1,6 +1,5 @@
 package com.masolria.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masolria.Mapper.UserMapper;
 import com.masolria.dto.AuthenticationEntry;
 import com.masolria.annotations.Auditable;
@@ -10,7 +9,6 @@ import com.masolria.entity.User;
 import com.masolria.exception.AlreadyRegisteredException;
 import com.masolria.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Module;
 
 import java.util.Optional;
 
@@ -19,6 +17,7 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 @Auditable
+@Loggable
 public class EntryService {
     /**
      * The User service.
@@ -53,7 +52,7 @@ public class EntryService {
      * @return The authorized user if the email and password match.
      * @throws IllegalArgumentException if the user with the given email doesn't exist or if the password is incorrect.
      */
-    @Loggable
+
     public UserDto authorize(AuthenticationEntry entry) {
         String email = entry.email();
         String password = entry.password();
