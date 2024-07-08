@@ -5,6 +5,7 @@ import com.masolria.dto.AuthenticationEntry;
 import com.masolria.dto.UserDto;
 import com.masolria.exception.AlreadyRegisteredException;
 import com.masolria.service.EntryService;
+import com.masolria.util.UserStoreUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,6 +35,7 @@ public class RegisterServlet extends HttpServlet {
 
             AuthenticationEntry auth = mapper.readValue(inputStream, AuthenticationEntry.class);
             UserDto userDto = entryService.register(auth);
+            UserStoreUtil.setUserAuthorized(userDto);
             req.getSession().setAttribute("user", userDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write("You are registered successfully.");

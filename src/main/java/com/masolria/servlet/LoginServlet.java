@@ -5,6 +5,7 @@ import com.masolria.dto.AuthenticationEntry;
 import com.masolria.dto.UserDto;
 import com.masolria.exception.EntityNotFoundException;
 import com.masolria.service.EntryService;
+import com.masolria.util.UserStoreUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -35,6 +36,7 @@ public class LoginServlet extends HttpServlet {
             AuthenticationEntry auth = objectMapper.readValue(inputStream, AuthenticationEntry.class);
             UserDto userDto = entryService.authorize(auth);
             req.getSession().setAttribute("user", userDto);
+            UserStoreUtil.setUserAuthorized(userDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.getWriter().write("You are authorized successfully.");
             resp.getWriter().write(objectMapper.writeValueAsString(userDto));

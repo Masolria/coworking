@@ -1,4 +1,4 @@
-package com.masolria.Aspect;
+package com.masolria.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,11 +8,9 @@ import org.aspectj.lang.annotation.*;
 @Slf4j
 public class LoggableAspect {
 
-    @Pointcut("@annotation(com.masolria.annotations.Loggable)")
+    @Pointcut("(within(@com.masolria.annotation.Loggable *)&& execution(* *(..))|| execution(@com.masolria.annotation.Auditable * *(..)))")
     public void loggableMethods() {
     }
-
-
 
     @Around("loggableMethods()")
     public Object logExecutionTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

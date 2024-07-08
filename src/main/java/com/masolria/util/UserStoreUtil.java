@@ -6,13 +6,16 @@ import com.masolria.dto.UserDto;
  * This class stores authorized user during
  */
 public class UserStoreUtil {
-    private static UserDto userAuthorized;
+    private static final ThreadLocal<UserDto> userAuthorized = new ThreadLocal<>();
 
-    public UserDto getUserAuthorized() {
-        return userAuthorized;
+    public static UserDto getUserAuthorized() {
+        return userAuthorized.get();
     }
 
-    public void setUserAuthorized(UserDto userAuthorized) {
-        this.userAuthorized = userAuthorized;
+    public static void setUserAuthorized(UserDto user) {
+        userAuthorized.set(user);
+    }
+    public static void clearUserAuthorized(){
+        userAuthorized.remove();
     }
 }
