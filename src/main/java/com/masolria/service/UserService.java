@@ -1,9 +1,8 @@
 package com.masolria.service;
 
-import com.masolria.annotations.Auditable;
-import com.masolria.annotations.Loggable;
+import com.masolria.annotation.Auditable;
+import com.masolria.annotation.Loggable;
 import com.masolria.dto.AuthenticationEntry;
-import com.masolria.Mapper.UserListMapper;
 import com.masolria.Mapper.UserMapper;
 import com.masolria.dto.UserDto;
 import com.masolria.entity.User;
@@ -27,7 +26,6 @@ public class UserService {
      */
     JdbcUserRepository userRepository;
     UserMapper mapper;
-    UserListMapper listMapper;
 
     /**
      * Retrieves a user from the database by their email address.
@@ -100,6 +98,6 @@ public class UserService {
      */
     public List<UserDto> getAll() {
         List<User> users = userRepository.findAll();
-        return listMapper.toDtoList(users);
+        return mapper.toDtoList(users);
     }
 }

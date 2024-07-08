@@ -2,8 +2,8 @@ package com.masolria.service;
 
 import com.masolria.Mapper.UserMapper;
 import com.masolria.dto.AuthenticationEntry;
-import com.masolria.annotations.Auditable;
-import com.masolria.annotations.Loggable;
+import com.masolria.annotation.Auditable;
+import com.masolria.annotation.Loggable;
 import com.masolria.dto.UserDto;
 import com.masolria.entity.User;
 import com.masolria.exception.AlreadyRegisteredException;

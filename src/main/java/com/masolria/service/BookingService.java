@@ -1,9 +1,8 @@
 package com.masolria.service;
 
-import com.masolria.Mapper.BookingListMapper;
 import com.masolria.Mapper.BookingMapper;
-import com.masolria.annotations.Auditable;
-import com.masolria.annotations.Loggable;
+import com.masolria.annotation.Auditable;
+import com.masolria.annotation.Loggable;
 import com.masolria.dto.BookingDto;
 import com.masolria.dto.SpaceDto;
 import com.masolria.entity.Booking;
@@ -36,7 +35,6 @@ public class BookingService {
      */
     SpaceService spaceService;
 
-    BookingListMapper listMapper;
     BookingMapper mapper;
     private static final BookingValidator validator = BookingValidator.getINSTANCE();
 
@@ -104,7 +102,7 @@ public class BookingService {
      */
     public List<BookingDto> findAll() {
         List<Booking> bookings = bookingRepository.findAll();
-        return listMapper.toDtoList(bookings);
+        return mapper.toDtoList(bookings);
     }
 
     /**

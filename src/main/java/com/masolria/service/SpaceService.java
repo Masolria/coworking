@@ -1,9 +1,8 @@
 package com.masolria.service;
 
-import com.masolria.Mapper.SpaceListMapper;
 import com.masolria.Mapper.SpaceMapper;
-import com.masolria.annotations.Auditable;
-import com.masolria.annotations.Loggable;
+import com.masolria.annotation.Auditable;
+import com.masolria.annotation.Loggable;
 import com.masolria.dto.SpaceDto;
 import com.masolria.entity.Space;
 import com.masolria.exception.EntityDeletionException;
@@ -24,7 +23,6 @@ import java.util.Optional;
 @Loggable
 public class SpaceService {
     private final SpaceMapper mapper;
-    private final SpaceListMapper listMapper;
     /**
      * The Space repository.
      */
@@ -38,7 +36,7 @@ public class SpaceService {
      */
     public List<SpaceDto> getAll() {
         List<Space> spaces = spaceRepository.findAll();
-        return listMapper.toDtoList(spaces);
+        return mapper.toDtoList(spaces);
     }
 
     /**

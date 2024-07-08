@@ -46,7 +46,7 @@ public class AppContextListener implements ServletContextListener {
                 getProperty("postgres.user"),
                 getProperty("postgres.password"),
                 getProperty("postgres.driver"));
-        servletContext.setAttribute("connectionManager",connectionManager);
+        servletContext.setAttribute("connectionManager", connectionManager);
 
     }
 
@@ -55,38 +55,34 @@ public class AppContextListener implements ServletContextListener {
 
         sc.setAttribute("spaceMapper", Mappers.getMapper(SpaceMapper.class));
         sc.setAttribute("bookingMapper", Mappers.getMapper(BookingMapper.class));
-        sc.setAttribute("userMapper",Mappers.getMapper(UserMapper.class));
-
-        sc.setAttribute("spaceListMapper", Mappers.getMapper(SpaceListMapper.class));
-        sc.setAttribute("bookingListMapper", Mappers.getMapper(BookingListMapper.class));
+        sc.setAttribute("userMapper", Mappers.getMapper(UserMapper.class));
     }
 
     private void initService(ServletContext sc) {
         ConnectionManager cManager = (ConnectionManager) sc.getAttribute("connectionManager");
         SpaceService spaceService = new SpaceService((SpaceMapper) sc.getAttribute("spaceMapper"),
-                (SpaceListMapper) sc.getAttribute("spaceListMapper"),
                 new JdbcSpaceRepository((cManager)));
 
         BookingService bookingService = new BookingService(new JdbcBookingRepository(cManager),
-                spaceService, (BookingListMapper) sc.getAttribute("bookingListMapper"),
+                spaceService,
                 (BookingMapper) sc.getAttribute("bookingMapper"));
 
         UserService userService = new UserService(new JdbcUserRepository(cManager),
-                (UserMapper) sc.getAttribute("userMapper"),
-                (UserListMapper) sc.getAttribute("userListMapper"));
+                (UserMapper) sc.getAttribute("userMapper"));
 
-        EntryService entryService = new EntryService(userService,(UserMapper) sc.getAttribute("userMapper"));
+        EntryService entryService = new EntryService(userService, (UserMapper) sc.getAttribute("userMapper"));
         sc.setAttribute("spaceService", spaceService);
         sc.setAttribute("bookingService", bookingService);
-        sc.setAttribute("userService",userService);
-        sc.setAttribute("entryService",entryService);
+        sc.setAttribute("userService", userService);
+        sc.setAttribute("entryService", entryService);
     }
-    private void liquibaseConfigure(ServletContext sc){
+
+    private void liquibaseConfigure(ServletContext sc) {
         LiquibaseRunner liquibaseRunner = new LiquibaseRunner((ConnectionManager) sc.getAttribute("connectionManager"));
         String enabled = getProperty("liquibase.enabled");
-        if(enabled.equals("true")){
+        if (enabled.equals("true")) {
             liquibaseRunner.runMigration();
         }
-        sc.setAttribute("liquibaseRunner",liquibaseRunner);
+        sc.setAttribute("liquibaseRunner", liquibaseRunner);
     }
 }
