@@ -6,7 +6,7 @@ databaseChangeLog:
           - sql:
               endDelimiter: ';'
               dbms: 'postgresql'
-              sql: CREATE TYPE audit_type AS ENUM( 'SUCCESS','FAIL')
+              sql: CREATE TYPE coworking_schema.audit_type AS ENUM( 'SUCCESS','FAIL')
 
       rollback:
           - sql:
@@ -38,7 +38,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: audit_type
-                  type: audit_type
+                  type: coworking_schema.audit_type
                   constraints:
                     nullable: false
               - column:
