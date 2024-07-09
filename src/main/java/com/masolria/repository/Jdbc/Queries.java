@@ -3,7 +3,11 @@ package com.masolria.repository.Jdbc;
 public class Queries {
     protected static final String SPACE_INSERT = """
             INSERT INTO coworking_schema.space(location, space_type)
-            VALUES(?,?::space_type)
+            VALUES(?,?)
+            """;
+    protected static final String AUDIT_SAVE = """
+            INSERT INTO coworking_schema.audit(user_email, method, audit_type, when_executed)
+            VALUES(?,?,?,?);
             """;
     protected static final String SPACE_UPDATE = """
             UPDATE coworking_schema.space
@@ -59,10 +63,7 @@ public class Queries {
             INSERT INTO coworking_schema.booking(is_booked,time_start,time_end,space_id,for_user_id)
             VALUES(?,?,?,?,?);
             """;
-    protected static final String AUDIT_SAVE = """
-            INSERT INTO coworking_schema.audit(user_email, message, when_executed)
-            VALUES(?,?,?);
-            """;
+
     protected static final String AUDIT_FIND_ALL = """
             SELECT * FROM coworking_schema.audit;
             """;
