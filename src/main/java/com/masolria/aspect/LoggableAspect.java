@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.*;
 @Slf4j
 public class LoggableAspect {
 
-    @Pointcut("(within(@com.masolria.annotation.Loggable *)&& execution(* *(..))|| execution(@com.masolria.annotation.Auditable * *(..)))")
+    @Pointcut("within(@com.masolria.annotation.Loggable *)&& execution(* *(..))")
     public void loggableMethods() {
     }
 
