@@ -53,7 +53,6 @@ class LoginServletTest {
         AuthenticationEntry entry = new AuthenticationEntry("test@example.com","password123");
         String json ="{\"email\": \"test@example.com\", \"password\": \"password123\"}";
         HttpSession session = mock(HttpSession.class);
-                //        ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());
         ServletInputStream streamMock = mock(ServletInputStream.class);
         when(entryService.authorize(entry)).thenReturn(userDto);
         when(req.getSession()).thenReturn(session);
