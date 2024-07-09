@@ -5,6 +5,7 @@ import com.masolria.Mapper.*;
 import com.masolria.db.ConnectionManager;
 import com.masolria.db.LiquibaseRunner;
 
+import com.masolria.repository.Jdbc.JdbcAuditRepository;
 import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
@@ -19,10 +20,17 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.mapstruct.factory.Mappers;
 
+import java.util.HashMap;
+
 import static com.masolria.util.PropertiesUtil.getProperty;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
+    private static final HashMap<String,Object> beyondContextAttrs = new HashMap<>();
+
+    public static Object beyondContextAttrGet(String obj) {
+        return beyondContextAttrs.get(obj);
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -32,6 +40,7 @@ public class AppContextListener implements ServletContextListener {
         initMappers(context);
         initService(context);
         liquibaseConfigure(context);
+        initializeAspect(context);
     }
 
 
@@ -84,5 +93,10 @@ public class AppContextListener implements ServletContextListener {
             liquibaseRunner.runMigration();
         }
         sc.setAttribute("liquibaseRunner", liquibaseRunner);
+    }
+    private void initializeAspect(ServletContext sc){
+        JdbcAuditRepository jdbcAuditRepository = new JdbcAuditRepository((ConnectionManager) sc.getAttribute("connectionManager"));
+        beyondContextAttrs.put("jdbcAuditRepository",jdbcAuditRepository);
+
     }
 }

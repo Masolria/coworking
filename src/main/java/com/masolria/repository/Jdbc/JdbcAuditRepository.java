@@ -13,7 +13,7 @@ import java.util.Optional;
 import static com.masolria.repository.Jdbc.Queries.*;
 
 @RequiredArgsConstructor
-public class AuditRepositoryJdbc {
+public class JdbcAuditRepository {
     private final ConnectionManager cManager;
     public Optional<Audit> findById(Long id) {
         try (Connection connection = cManager.getConnection();
@@ -24,7 +24,7 @@ public class AuditRepositoryJdbc {
                 if (rs.next()) {
                     return Optional.of(Audit.builder().
                             userEmail(rs.getString("user_email"))
-                            .message(rs.getString("message"))
+                            .method(rs.getString("message"))
                             .whenExecuted(rs.getTimestamp("when_executed").toLocalDateTime())
                             .build()
                     );
@@ -44,7 +44,7 @@ public class AuditRepositoryJdbc {
             while (rs.next()) {
                 Audit audit = Audit.builder().id(rs.getLong("id"))
                         .userEmail(rs.getString("user_email"))
-                        .message(rs.getString("message"))
+                        .method(rs.getString("message"))
                         .whenExecuted(rs.getTimestamp("when_executed").toLocalDateTime())
                         .build();
                 audits.add(audit);
@@ -63,17 +63,18 @@ public class AuditRepositoryJdbc {
              PreparedStatement preparedStatement = connection.prepareStatement(AUDIT_SAVE, Statement.RETURN_GENERATED_KEYS)) {
 
 
-            preparedStatement.setString(1, audit.userEmail());
-            preparedStatement.setString(2, audit.message());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(audit.whenExecuted()));
+            preparedStatement.setString(1, audit.getUserEmail());
+            preparedStatement.setString(2, audit.getMethod());
+            preparedStatement.setString(3, audit.getAuditType().name());
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(audit.getWhenExecuted()));
 
             preparedStatement.executeUpdate();
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 if (rs.next()) {
                     saved = Audit.builder().id((rs.getLong(1)))
-                            .message(audit.message())
-                            .userEmail(audit.userEmail())
-                            .whenExecuted(audit.whenExecuted())
+                            .method(audit.getMethod())
+                            .userEmail(audit.getUserEmail())
+                            .whenExecuted(audit.getWhenExecuted())
                             .build();
                 } else {
                     throw new SQLException("Creating booking failed, no ID obtained.");

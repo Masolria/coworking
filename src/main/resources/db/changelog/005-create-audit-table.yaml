@@ -12,7 +12,7 @@ databaseChangeLog:
           - sql:
               endDelimiter: ';'
               dbms: 'postgresql'
-              sql: DROP TYPE audit_type;
+              sql: DROP TYPE coworking_schema.audit_type;
   - changeSet:
       id: 10
       author: Maria_solsol
@@ -32,7 +32,7 @@ databaseChangeLog:
                   name: user_email
                   type: VARCHAR(320)
               - column:
-                  name: message
+                  name: method
                   type: VARCHAR
                   constraints:
                     nullable: false

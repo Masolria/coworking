@@ -3,11 +3,11 @@ package com.masolria.aspect;
 import com.masolria.dto.UserDto;
 import com.masolria.entity.Audit;
 import com.masolria.entity.AuditType;
-import com.masolria.repository.Jdbc.AuditRepositoryJdbc;
+
+import com.masolria.listener.AppContextListener;
+import com.masolria.repository.Jdbc.JdbcAuditRepository;
 import com.masolria.util.UserStoreUtil;
-import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -15,33 +15,30 @@ import org.aspectj.lang.annotation.Pointcut;
 import java.time.LocalDateTime;
 
 @Aspect
-@RequiredArgsConstructor
 public class AuditableAspect {
     //TODO logging  exception in aspect и поставить аннотацию на сервисы  и разобраться с логами
-    private final AuditRepositoryJdbc auditRepository;
+    private final JdbcAuditRepository auditRepository = (JdbcAuditRepository) AppContextListener.beyondContextAttrGet("jdbcAuditRepository");
 
-    @Pointcut("within(@com.masolria.annotation.Auditable *) && execution(* *(..))")
+    @Pointcut("within(@com.masolria.annotation.Auditable *)&& execution(* *(..))")
     public void annotatedBy() {
     }
 
     @Around("annotatedBy()")
     public Object audit(ProceedingJoinPoint joinPoint) throws Throwable {
+          System.out.println("audit worked");
         String methodCalled = joinPoint.getSignature().getName();
-        String email;
         UserDto userAuthorized = UserStoreUtil.getUserAuthorized();
-        Object proceed;
-
-        email = userAuthorized != null ? userAuthorized.email() : "no email";
-        proceed = joinPoint.proceed();
+        String email = userAuthorized != null ? userAuthorized.email() : "no email";
         LocalDateTime when = LocalDateTime.now();
+        Object result = joinPoint.proceed();
         Audit audit = Audit.builder()
                 .userEmail(email)
-                .message(methodCalled)
-                .whenExecuted(when)
+                .method(methodCalled)
                 .auditType(AuditType.SUCCESS)
+                .whenExecuted(when)
                 .build();
-        auditRepository.save(audit);
-        return proceed;
-    }
 
+        auditRepository.save(audit);
+       return result;
+    }
 }
