@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 
 @Aspect
 public class AuditableAspect {
-    //TODO logging  exception in aspect и поставить аннотацию на сервисы  и разобраться с логами
     private final JdbcAuditRepository auditRepository = (JdbcAuditRepository) AppContextListener.beyondContextAttrGet("jdbcAuditRepository");
 
     @Pointcut("within(@com.masolria.annotation.Auditable *)&& execution(* *(..))")

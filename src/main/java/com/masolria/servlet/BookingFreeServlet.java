@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/booking-free")//TODO ссылки перенести в отдельный класс, валидацию добавить :(
+@WebServlet("/booking-free")
 public class BookingFreeServlet extends HttpServlet {
     BookingService bookingService;
     ObjectMapper objectMapper;
@@ -25,7 +25,7 @@ public class BookingFreeServlet extends HttpServlet {
         objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
     }
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         try  {
             List<BookingDto> list = bookingService.getFreeSlots();
             String jsonResp = objectMapper.writeValueAsString(list);
