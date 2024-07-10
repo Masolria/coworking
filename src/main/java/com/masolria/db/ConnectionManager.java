@@ -24,14 +24,7 @@ public class ConnectionManager {
      */
     private final String password;
 
-    /**
-     * Instantiates a new Connection manager.
-     *
-     * @param url      the url
-     * @param user     the user
-     * @param password the password
-     */
-
+  private final String driver;
     /**
      * Provides connection.Invokes DriverManager getConnection() with given url, user and password
      *
@@ -39,8 +32,14 @@ public class ConnectionManager {
      * @throws SQLException the sql exception
      */
     public Connection getConnection() throws SQLException {
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return DriverManager.getConnection(url,
                 user,
-                password);
+                password
+                );
     }
 }

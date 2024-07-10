@@ -7,10 +7,7 @@ package com.masolria.exception;
 public class OccupiedConflictException extends RuntimeException {
     /**
      * Instantiates a new Occupied conflict exception.
-     *
-     * @param string the string message for console output
      */
-    public OccupiedConflictException(String string) {
-        System.out.println(string);
+    public OccupiedConflictException() {
     }
 }

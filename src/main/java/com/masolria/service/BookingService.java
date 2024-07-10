@@ -1,9 +1,18 @@
 package com.masolria.service;
 
+import com.masolria.Mapper.BookingMapper;
+import com.masolria.annotation.Auditable;
+import com.masolria.annotation.Loggable;
+import com.masolria.dto.BookingDto;
+import com.masolria.dto.SpaceDto;
 import com.masolria.entity.Booking;
-import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
+import com.masolria.exception.EntityDeletionException;
+import com.masolria.exception.EntityNotFoundException;
+import com.masolria.exception.OccupiedConflictException;
+import com.masolria.exception.ValidationException;
 import com.masolria.repository.Jdbc.JdbcBookingRepository;
+import com.masolria.validator.BookingValidator;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,6 +23,8 @@ import java.util.Optional;
  * The Booking service.
  */
 @AllArgsConstructor
+@Auditable
+@Loggable
 public class BookingService {
     /**
      * The Booking repository.
@@ -24,14 +35,22 @@ public class BookingService {
      */
     SpaceService spaceService;
 
+    BookingMapper mapper;
+    private static final BookingValidator validator = BookingValidator.getINSTANCE();
+
     /**
      * Saves a new booking to the database.
      *
      * @param booking The booking to be saved.
      * @return The saved booking.
      */
-    public Booking save(Booking booking) {
-        return bookingRepository.save(booking);
+    public BookingDto save(BookingDto createDto) {
+        if (validator.isValid(createDto)) {
+            Booking booking = mapper.toEntity(createDto);
+            Booking saved = bookingRepository.save(booking);
+            return mapper.toDto(saved);
+        }
+        throw new ValidationException();
     }
 
     /**
@@ -40,8 +59,13 @@ public class BookingService {
      * @param booking The updated booking.
      * @return The updated booking.
      */
-    public Booking update(Booking booking) {
-        return bookingRepository.update(booking);
+    public BookingDto update(BookingDto bookingDto) {
+        if (validator.isValid(bookingDto)) {
+            Booking booking = mapper.toEntity(bookingDto);
+            Booking updated = bookingRepository.update(booking);
+            return mapper.toDto(updated);
+        }
+        throw new ValidationException();
     }
 
     /**
@@ -49,8 +73,12 @@ public class BookingService {
      *
      * @param booking The booking to be deleted.
      */
-    public void delete(Booking booking) {
-        bookingRepository.delete(booking);
+    public void delete(Long id) throws EntityDeletionException {
+        Optional<Booking> optional = bookingRepository.findById(id);
+        if (optional.isPresent()) {
+            Booking booking = optional.get();
+            bookingRepository.delete(booking);
+        } else throw new EntityDeletionException();
     }
 
     /**
@@ -59,8 +87,12 @@ public class BookingService {
      * @param id The ID of the booking to retrieve.
      * @return An Optional containing the booking if found, otherwise an empty Optional.
      */
-    public Optional<Booking> findById(Long id) {
-        return bookingRepository.findById(id);
+    public BookingDto findById(Long id) throws EntityDeletionException {
+        Optional<Booking> optional = bookingRepository.findById(id);
+        if (optional.isPresent()) {
+            Booking booking = optional.get();
+            return mapper.toDto(booking);
+        } else throw new EntityNotFoundException();
     }
 
     /**
@@ -68,8 +100,9 @@ public class BookingService {
      *
      * @return A list of all bookings.
      */
-    public List<Booking> findAll() {
-        return bookingRepository.findAll();
+    public List<BookingDto> findAll() {
+        List<Booking> bookings = bookingRepository.findAll();
+        return mapper.toDtoList(bookings);
     }
 
     /**
@@ -78,10 +111,10 @@ public class BookingService {
      * @param localDate The date for which to retrieve bookings.
      * @return A list of bookings for the specified date.
      */
-    public List<Booking> getByDate(LocalDate localDate){
-        List<Booking> bookings = findAll();
+    public List<BookingDto> getByDate(LocalDate localDate) {
+        List<BookingDto> bookings = findAll();
         return bookings.stream()
-                .filter(b -> b.getTimeStart()
+                .filter(b -> b.timeStart()
                         .toLocalDate()
                         .equals(localDate))
                 .toList();
@@ -93,14 +126,12 @@ public class BookingService {
      * @param spaceType The type of space for which to retrieve bookings.
      * @return A list of bookings for the specified space type.
      */
-    public List<Booking> getByType(SpaceType spaceType) {
-        List<Booking> bookings = findAll();
+    public List<BookingDto> getByType(SpaceType spaceType) {
+        List<BookingDto> bookings = findAll();
         return bookings.stream()
                 .filter(b -> {
-                    Optional<Space> optional = spaceService.findById(b.getSpaceId());
-                if(optional.isEmpty()){return false;}
-                    Space space = optional.get();
-                    return space.getSpaceType().equals(spaceType);
+                    SpaceDto spaceDto = spaceService.findById(b.spaceId());
+                    return spaceDto.spaceType().equals(spaceType.name());
                 })
                 .toList();
     }
@@ -111,10 +142,10 @@ public class BookingService {
      * @param userId The ID of the user for which to retrieve bookings.
      * @return A list of bookings for the specified user.
      */
-    public List<Booking> getByUserId(Long userId) {
-        List<Booking> bookings = findAll();
+    public List<BookingDto> getByUserId(Long userId) {
+        List<BookingDto> bookings = findAll();
         return bookings.stream()
-                .filter(b -> userId.equals(b.getForUserId()))
+                .filter(b -> userId.equals(b.forUserId()))
                 .toList();
 
     }
@@ -124,10 +155,30 @@ public class BookingService {
      *
      * @return A list of free booking slots.
      */
-    public List<Booking> getFreeSlots() {
-        List<Booking> bookings = findAll();
+    public List<BookingDto> getFreeSlots() {
+        List<BookingDto> bookings = findAll();
         return bookings.stream()
                 .filter(b -> !b.isBooked())
                 .toList();
+    }
+
+    public void reserve(Long id) {
+        Optional<Booking> optional = bookingRepository.findById(id);
+        if(optional.isPresent()){
+           Booking booking = optional.get();
+          if(! booking.isBooked()){
+              booking.setBooked(true);
+          }else throw new OccupiedConflictException();
+        }else throw new EntityNotFoundException();
+    }
+
+    public void release(Long id) {
+        Optional<Booking> optional = bookingRepository.findById(id);
+        if(optional.isPresent()){
+            Booking booking = optional.get();
+            if( booking.isBooked()){
+                booking.setBooked(false);
+            }else throw new OccupiedConflictException();
+        }else throw new EntityNotFoundException();
     }
 }

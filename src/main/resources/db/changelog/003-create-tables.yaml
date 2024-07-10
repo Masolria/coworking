@@ -32,15 +32,16 @@ databaseChangeLog:
       author: Maria_solsol
       changes:
         - sql:
+
             endDelimiter: ';'
             dbms: 'postgresql'
-            sql: CREATE TYPE space_type AS ENUM( 'WORKING_SPACE','CONFERENCE_HALL')
+            sql: CREATE TYPE coworking_schema.space_type AS ENUM( 'WORKING_SPACE','CONFERENCE_HALL')
 
       rollback:
         - sql:
             endDelimiter: ';'
             dbms: 'postgresql'
-            sql: DROP TYPE space_type;
+            sql: DROP TYPE coworking_schema.space_type;
   - changeSet:
       id: 5
       author: Maria_solsol
@@ -63,7 +64,7 @@ databaseChangeLog:
                      nullable: false
               - column:
                   name: space_type
-                  type: space_type
+                  type: coworking_schema.space_type
                   constraints:
                      nullable: false
       rollback:

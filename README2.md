@@ -1,23 +1,36 @@
-#### coworking Console Application
+### Endpoints
 
-#### Key Features
-- user registration and authorization;
-- viewing a list of all available workplaces and conference rooms;
-- view available slots for booking for a specific date;
-- booking a workplace or conference room for a specific time and date;
-- cancel a reservation;
-- adding new workstations and conference rooms, as well as managing existing ones;
-- view all bookings and filter them by date, user or resource.
+Firstly you must register if you haven't done so before and log in.
 
-#### Stack
- - 
+- `POST /login`
+- `POST /register`
+  `` json for log in:``
+  {
+  "email":"default@email.com",
+  "password":"password"
+  }
 
-#### Testing
-    -repostory layer using PostgresTestContainer
-    -
 
-### Run the Project:
-
-- Clone the repository
-- runn command docker-compose up -d
--run main method of Main class 
+and then you are allowed to interact.
+- `GET /space-all` - obtain all space entries
+- `GET, DELETE /space` - deletion, and getting by id spaces
+  {
+  "id":100002
+  }
+- `POST /space` - add new entry to the space table
+  {
+  "location":"some",
+  "spaceType":"WORKING_SPACE"
+  }
+- `GET, DELETE /booking` - deletion, and getting by id bookings
+- `POST /booking` - add new entry to the booking table
+- `GET /booking-free` - shows all free booking slots
+- `POST /booking-by-date` - shows all booking by date
+  {
+  "date":"2024 02 06"
+  }
+- `PUT /booking-reserve` reserves a slot with given id if it's free
+- `PUT /booking-release` releases a slot with given id
+  {
+  "id":100005
+  }
