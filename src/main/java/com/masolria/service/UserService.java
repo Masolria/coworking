@@ -6,6 +6,7 @@ import com.masolria.dto.AuthenticationEntry;
 import com.masolria.Mapper.UserMapper;
 import com.masolria.dto.UserDto;
 import com.masolria.entity.User;
+import com.masolria.exception.EntityDeletionException;
 import com.masolria.exception.EntityNotFoundException;
 import com.masolria.exception.EmailAlreadyInUseException;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
@@ -88,7 +89,7 @@ public class UserService {
         Optional<User> optional = userRepository.findById(userDto.id());
         if (optional.isPresent()) {
             userRepository.delete(optional.get());
-        } else throw new EntityNotFoundException();
+        } else throw new EntityDeletionException();
     }
 
     /**
