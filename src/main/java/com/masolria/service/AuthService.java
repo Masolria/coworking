@@ -18,7 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Auditable
 @Loggable
-public class EntryService {
+public class AuthService {
     /**
      * The User service.
      */
@@ -39,7 +39,7 @@ public class EntryService {
         if (email == null || password == null || email.isBlank() || email.isEmpty() || password.isEmpty() || password.isBlank()) {
             throw new IllegalArgumentException("cannot register, input data is invalid");
         } else if (userService.getByEmail(email) != null) {
-            throw new AlreadyRegisteredException();
+            throw new AlreadyRegisteredException("user with given email already exists");
         }
         return userService.save(entry);
     }

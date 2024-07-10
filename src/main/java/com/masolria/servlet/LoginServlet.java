@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masolria.dto.AuthenticationEntry;
 import com.masolria.dto.UserDto;
 import com.masolria.exception.EntityNotFoundException;
-import com.masolria.service.EntryService;
+import com.masolria.service.AuthService;
 import com.masolria.util.UserStoreUtil;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -19,14 +19,14 @@ import java.io.InputStream;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    EntryService entryService;
+    AuthService authService;
     private ObjectMapper objectMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext sc = config.getServletContext();
-        entryService = (EntryService) sc.getAttribute("entryService");
+        authService = (AuthService) sc.getAttribute("authService");
         objectMapper = (ObjectMapper) sc.getAttribute("objectMapper");
     }
 
@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             AuthenticationEntry auth = objectMapper.readValue(inputStream, AuthenticationEntry.class);
-            UserDto userDto = entryService.authorize(auth);
+            UserDto userDto = authService.authorize(auth);
             req.getSession().setAttribute("user", userDto);
             UserStoreUtil.setUserAuthorized(userDto);
             resp.setStatus(HttpServletResponse.SC_OK);

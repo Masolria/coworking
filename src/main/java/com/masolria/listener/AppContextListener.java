@@ -10,7 +10,7 @@ import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
 import com.masolria.service.BookingService;
-import com.masolria.service.EntryService;
+import com.masolria.service.AuthService;
 import com.masolria.service.SpaceService;
 import com.masolria.service.UserService;
 import com.masolria.util.PropertiesUtil;
@@ -79,11 +79,11 @@ public class AppContextListener implements ServletContextListener {
         UserService userService = new UserService(new JdbcUserRepository(cManager),
                 (UserMapper) sc.getAttribute("userMapper"));
 
-        EntryService entryService = new EntryService(userService, (UserMapper) sc.getAttribute("userMapper"));
+        AuthService authService = new AuthService(userService, (UserMapper) sc.getAttribute("userMapper"));
         sc.setAttribute("spaceService", spaceService);
         sc.setAttribute("bookingService", bookingService);
         sc.setAttribute("userService", userService);
-        sc.setAttribute("entryService", entryService);
+        sc.setAttribute("authService", authService);
     }
 
     private void liquibaseConfigure(ServletContext sc) {
