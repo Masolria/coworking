@@ -29,7 +29,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         try (InputStream inputStream = req.getInputStream()) {
             JsonNode jsonNode = objectMapper.readTree(inputStream);
             Long id = jsonNode.get("id").asLong();
@@ -46,7 +46,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         try (InputStream inputStream = req.getInputStream()) {
             JsonNode jsonNode = objectMapper.readTree(inputStream);
             Long id = jsonNode.get("id").asLong();
@@ -61,7 +61,6 @@ public class BookingServlet extends HttpServlet {
             resp.getWriter().write(e.getMessage());
         }
     }
-    //TODO exception handler
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
