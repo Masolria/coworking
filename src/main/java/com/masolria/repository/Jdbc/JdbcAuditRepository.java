@@ -1,9 +1,10 @@
 package com.masolria.repository.Jdbc;
 
-import com.masolria.db.ConnectionManager;
 import com.masolria.entity.Audit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.masolria.repository.Jdbc.Queries.*;
-
+@Repository
 @RequiredArgsConstructor
 public class JdbcAuditRepository {
-    private final ConnectionManager cManager;
+    private final DataSource datasource;
+
     public Optional<Audit> findById(Long id) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AUDIT_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
@@ -37,7 +39,7 @@ public class JdbcAuditRepository {
     }
 
     public List<Audit> findAll() {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(AUDIT_FIND_ALL);
             List<Audit> audits = new ArrayList<>();
@@ -59,7 +61,7 @@ public class JdbcAuditRepository {
 
     public Audit save(Audit audit) {
         Audit saved;
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(AUDIT_SAVE, Statement.RETURN_GENERATED_KEYS)) {
 
 

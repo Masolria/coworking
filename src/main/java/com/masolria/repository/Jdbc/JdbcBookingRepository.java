@@ -1,9 +1,10 @@
 package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.Booking;
-import com.masolria.db.ConnectionManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,19 +17,20 @@ import static com.masolria.repository.Jdbc.Queries.*;
  * The Jdbc booking repository. Performs CRUD operations for booking entries to the database.
  * Postgresql dialect in all sql queries
  */
+@Repository
 @RequiredArgsConstructor
 public class JdbcBookingRepository {
     /**
      * The field configures the connection to the database
      */
-    private final ConnectionManager cManager;
+    private final DataSource datasource;
 
     /**
      * Deletes booking entry from table.
      * @param booking the booking for deletion
      */
     public void delete(Booking booking) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_DELETE)) {
             preparedStatement.setLong(1, booking.getId());
             preparedStatement.executeUpdate();
@@ -44,7 +46,7 @@ public class JdbcBookingRepository {
      * Returns the empty optional if the booking entry doesn't exist in the table.
      */
     public Optional<Booking> findById(Long id) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
 
@@ -72,7 +74,7 @@ public class JdbcBookingRepository {
      * @return the list with all booking entries available in the table
      */
     public List<Booking> findAll() {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(BOOKING_FIND_ALL);
             List<Booking> bookings = new ArrayList<>();
@@ -103,7 +105,7 @@ public class JdbcBookingRepository {
      * @return the booking
      */
     public Booking update(Booking booking) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_UPDATE)
         ) {
             preparedStatement.setBoolean(1, booking.isBooked());
@@ -127,7 +129,7 @@ public class JdbcBookingRepository {
      * @return the booking with new id
      */
     public Booking save(Booking booking) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(BOOKING_SAVE, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setBoolean(1, booking.isBooked());
