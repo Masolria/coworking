@@ -8,6 +8,8 @@ public class OccupiedConflictException extends RuntimeException {
     /**
      * Instantiates a new Occupied conflict exception.
      */
-    public OccupiedConflictException() {
+
+    public OccupiedConflictException(String message) {
+        super(message);
     }
 }
