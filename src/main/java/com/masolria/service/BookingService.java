@@ -14,6 +14,7 @@ import com.masolria.exception.ValidationException;
 import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import com.masolria.validator.BookingValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,17 +26,18 @@ import java.util.Optional;
 @AllArgsConstructor
 @Auditable
 @Loggable
+@Service
 public class BookingService {
     /**
      * The Booking repository.
      */
-    JdbcBookingRepository bookingRepository;
+    private final JdbcBookingRepository bookingRepository;
     /**
      * The Space service.
      */
-    SpaceService spaceService;
+    private final SpaceService spaceService;
 
-    BookingMapper mapper;
+    private final BookingMapper mapper;
     private static final BookingValidator validator = BookingValidator.getINSTANCE();
 
     /**
@@ -50,7 +52,7 @@ public class BookingService {
             Booking saved = bookingRepository.save(booking);
             return mapper.toDto(saved);
         }
-        throw new ValidationException();
+        throw new ValidationException("Booking input dto is invalid.");
     }
 
     /**
@@ -65,7 +67,7 @@ public class BookingService {
             Booking updated = bookingRepository.update(booking);
             return mapper.toDto(updated);
         }
-        throw new ValidationException();
+        throw new ValidationException("Booking input dto is invalid.");
     }
 
     /**
@@ -78,7 +80,7 @@ public class BookingService {
         if (optional.isPresent()) {
             Booking booking = optional.get();
             bookingRepository.delete(booking);
-        } else throw new EntityDeletionException();
+        } else throw new EntityDeletionException("Given dto doesn't match any row in the table.");
     }
 
     /**
@@ -92,7 +94,7 @@ public class BookingService {
         if (optional.isPresent()) {
             Booking booking = optional.get();
             return mapper.toDto(booking);
-        } else throw new EntityNotFoundException();
+        } else throw new EntityNotFoundException("Given id doesn't match any row in the table.");
     }
 
     /**
@@ -164,21 +166,21 @@ public class BookingService {
 
     public void reserve(Long id) {
         Optional<Booking> optional = bookingRepository.findById(id);
-        if(optional.isPresent()){
-           Booking booking = optional.get();
-          if(! booking.isBooked()){
-              booking.setBooked(true);
-          }else throw new OccupiedConflictException();
-        }else throw new EntityNotFoundException();
+        if (optional.isPresent()) {
+            Booking booking = optional.get();
+            if (!booking.isBooked()) {
+                booking.setBooked(true);
+            } else throw new OccupiedConflictException("Booking slot is already reserved. Cannot perform action.");
+        } else throw new EntityNotFoundException("Given id doesn't match any row in the table.");
     }
 
     public void release(Long id) {
         Optional<Booking> optional = bookingRepository.findById(id);
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             Booking booking = optional.get();
-            if( booking.isBooked()){
+            if (booking.isBooked()) {
                 booking.setBooked(false);
-            }else throw new OccupiedConflictException();
-        }else throw new EntityNotFoundException();
+            } else throw new OccupiedConflictException("Booking slot is already released. Cannot perform action.");
+        } else throw new EntityNotFoundException("Given id doesn't match any row in the table.");
     }
 }

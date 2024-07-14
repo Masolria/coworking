@@ -2,9 +2,8 @@ package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.Booking;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +22,7 @@ public class JdbcBookingRepository {
     /**
      * The field configures the connection to the database
      */
-    private final DataSource datasource;
+    private final DriverManagerDataSource datasource;
 
     /**
      * Deletes booking entry from table.

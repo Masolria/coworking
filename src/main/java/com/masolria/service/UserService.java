@@ -11,6 +11,7 @@ import com.masolria.exception.EntityNotFoundException;
 import com.masolria.exception.EmailAlreadyInUseException;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,12 +22,13 @@ import java.util.Optional;
 @AllArgsConstructor
 @Auditable
 @Loggable
+@Service
 public class UserService {
     /**
      * The User repository.
      */
-    JdbcUserRepository userRepository;
-    UserMapper mapper;
+    private final JdbcUserRepository userRepository;
+    private final UserMapper mapper;
 
     /**
      * Retrieves a user from the database by their email address.
@@ -34,12 +36,11 @@ public class UserService {
      * @param email The email address of the user to retrieve.
      * @return An Optional containing the user if found, otherwise an empty Optional.
      */
-    public UserDto getByEmail(String email) throws EntityNotFoundException {
+    public User getByEmail(String email) throws EntityNotFoundException {
 
         Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isPresent()) {
-            return mapper.toDto(optional.get());
-        } else throw new EntityNotFoundException();
+        return optional.orElse(null);
+
     }
 
     /**
@@ -52,7 +53,7 @@ public class UserService {
         Optional<User> optional = userRepository.findById(id);
         if (optional.isPresent()) {
             return mapper.toDto(optional.get());
-        } else throw new EntityNotFoundException();
+        } else throw new EntityNotFoundException("Given id doesn't match any row in the table.");
     }
 
     /**
@@ -66,7 +67,7 @@ public class UserService {
             User user = User.builder().password(entry.password()).email(entry.email()).build();
             userRepository.save(user);
             return mapper.toDto(user);
-        } else throw new EmailAlreadyInUseException();
+        } else throw new EmailAlreadyInUseException("This email already in use by another user.");
     }
 
     /**
@@ -89,7 +90,7 @@ public class UserService {
         Optional<User> optional = userRepository.findById(userDto.id());
         if (optional.isPresent()) {
             userRepository.delete(optional.get());
-        } else throw new EntityDeletionException();
+        } else throw new EntityDeletionException("Given dto doesn't match any row in the table.");
     }
 
     /**

@@ -2,9 +2,8 @@ package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.Audit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +14,7 @@ import static com.masolria.repository.Jdbc.Queries.*;
 @Repository
 @RequiredArgsConstructor
 public class JdbcAuditRepository {
-    private final DataSource datasource;
+    private final DriverManagerDataSource datasource;
 
     public Optional<Audit> findById(Long id) {
         try (Connection connection = datasource.getConnection();

@@ -11,6 +11,7 @@ import com.masolria.exception.ValidationException;
 import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import com.masolria.validator.SpaceValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Auditable
 @Loggable
+@Service
 public class SpaceService {
     private final SpaceMapper mapper;
     /**
@@ -50,7 +52,7 @@ public class SpaceService {
         if (optionalSpace.isPresent()) {
             Space space = optionalSpace.get();
             return mapper.toDto(space);
-        } else throw new EntityNotFoundException();
+        } else throw new EntityNotFoundException("Entry in the table with given id doesn't exist.");
     }
 
     /**
@@ -64,7 +66,7 @@ public class SpaceService {
             Space space = mapper.toEntity(spaceDto);
             Space saved = spaceRepository.save(space);
             return mapper.toDto(saved);
-        } else throw new ValidationException();
+        } else throw new ValidationException("Space input dto is invalid.");
     }
 
     /**
@@ -76,7 +78,7 @@ public class SpaceService {
         Optional<Space> optional = spaceRepository.findById(id);
         if (optional.isPresent()) {
             spaceRepository.delete(optional.get());
-        } else throw new EntityDeletionException();
+        } else throw new EntityDeletionException("Given dto doesn't match any row in the table.");
     }
 
 
@@ -91,6 +93,6 @@ public class SpaceService {
             Space space = mapper.toEntity(spaceDto);
             Space updated = spaceRepository.update(space);
             return mapper.toDto(updated);
-        } else throw new ValidationException();
+        } else throw new ValidationException("Space input dto is invalid.");
     }
 }

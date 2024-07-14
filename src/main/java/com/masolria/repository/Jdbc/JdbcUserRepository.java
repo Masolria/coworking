@@ -2,9 +2,8 @@ package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +21,7 @@ public class JdbcUserRepository {
     /**
      * The field configures the connection to the database
      */
-    private final DataSource datasource;
+    private final DriverManagerDataSource datasource;
 
     /**
      * Deletes a user from the table
