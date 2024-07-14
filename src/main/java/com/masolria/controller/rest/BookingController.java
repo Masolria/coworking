@@ -1,25 +1,26 @@
 package com.masolria.controller.rest;
 
 import com.masolria.dto.BookingDto;
-import com.masolria.dto.SpaceTypeRequest;
+import com.masolria.entity.SpaceType;
 import com.masolria.service.BookingService;
 import com.masolria.util.DateTimeParseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/booking")
+@RequestMapping(value="/booking", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BookingController {
 
-    BookingService bookingService;
+    private final  BookingService bookingService;
 
-    @PostMapping(value = "/by-space-type",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookingDto>> bySpaceType(@RequestBody SpaceTypeRequest spaceType) {
-        List<BookingDto> dtoList = bookingService.getByType(spaceType.get());
+    @PostMapping(value = "/by-space-type")
+    public ResponseEntity<List<BookingDto>> bySpaceType(@RequestBody String spaceType) {
+        List<BookingDto> dtoList = bookingService.getByType(SpaceType.valueOf(spaceType));
         return ResponseEntity.ok(dtoList);
     }
     @PostMapping(value = "/by-user-id")//produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,12 +51,13 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public BookingDto get(@PathVariable(name="id")Long id){
-        return bookingService.findById(id);
+    public ResponseEntity<BookingDto> get(@PathVariable(name="id")Long id){
+       BookingDto dto = bookingService.findById(id);
+        return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(@RequestBody Long id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable(name = "id") Long id){
         bookingService.delete(id);
        return ResponseEntity.ok("Booking deleted successfully");
     }

@@ -2,14 +2,18 @@ package com.masolria.controller.rest;
 
 import com.masolria.dto.SpaceDto;
 import com.masolria.service.SpaceService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@RestController("/space")
+@RequestMapping(value="/space", produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController()
+@RequiredArgsConstructor
 public class SpaceController {
-    SpaceService spaceService;
+    private final SpaceService spaceService;
+
 
     @GetMapping("/by-id")
     ResponseEntity<SpaceDto> byId(@RequestBody Long id) {
@@ -39,5 +43,4 @@ public class SpaceController {
        SpaceDto dto = spaceService.save(spaceDto);
         return ResponseEntity.ok(String.format("Space entry added successfully.Assigned id is %d.",dto.id()));
     }
-
 }
