@@ -17,12 +17,7 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler(EntityDeletionException.class)
-    public ResponseEntity<ErrorResponse> handleEntityDeletion(EntityDeletionException e) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
-    }
-
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(value = {ValidationException.class, EntityDeletionException.class})
     public ResponseEntity<ErrorResponse> handleValidation(ValidationException e) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
     }
