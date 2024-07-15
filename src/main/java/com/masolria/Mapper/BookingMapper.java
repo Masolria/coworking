@@ -9,8 +9,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring",injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface BookingMapper {
-    @Mapping(source = "booked", target = "isBooked")
+    @Mapping(source = "booked", target = "booked")
     BookingDto toDto(Booking booking);
+    @Mapping(source = "booked", target = "isBooked")
     Booking toEntity(BookingDto bookingDto);
     List<BookingDto> toDtoList(List<Booking> bookings);
 }
