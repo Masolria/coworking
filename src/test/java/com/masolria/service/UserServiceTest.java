@@ -51,8 +51,8 @@ class UserServiceTest {
         when(userRepository.update(user)).thenReturn(user);
         UserDto expected= mapper.toDto(given);
         UserDto actual = userService.update(expected);
-        assertThat(actual.id()).isEqualTo(expected.id());
-        assertThat(actual.email()).isEqualTo(expected.email());
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getEmail()).isEqualTo(expected.getEmail());
 
     }
 
@@ -95,6 +95,6 @@ class UserServiceTest {
         when(userRepository.save(user)).thenReturn(user);
         AuthenticationEntry entry = new AuthenticationEntry(user.getEmail(), user.getPassword());
         UserDto saved = userService.save(entry);
-        assertThat(saved.email()).isEqualTo(entry.email());
+        assertThat(saved.getEmail()).isEqualTo(entry.getEmail());
     }
 }

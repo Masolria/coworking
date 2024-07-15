@@ -1,6 +1,11 @@
 package com.masolria.dto;
 
 
-public record SpaceDto(Long id,
-                       String location,
-                       String spaceType) {}
+import lombok.Data;
+
+@Data
+public final class SpaceDto {
+    private final Long id;
+    private final String location;
+    private final String spaceType;
+}

@@ -1,4 +1,10 @@
 package com.masolria.dto;
 
-public record AuthenticationEntry(String email, String password) {
+import lombok.Data;
+
+@Data
+public final class AuthenticationEntry {
+    private final String email;
+    private final String password;
+
 }

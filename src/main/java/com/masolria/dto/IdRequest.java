@@ -3,8 +3,6 @@ package com.masolria.dto;
 import lombok.Data;
 
 @Data
-public final class UserDto {
+public final class IdRequest {
     private final Long id;
-    private final String email;
-
 }
