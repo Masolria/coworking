@@ -1,10 +1,13 @@
 package com.masolria.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public final class AuthenticationEntry {
-    private final String email;
-    private final String password;
-
+@AllArgsConstructor
+@NoArgsConstructor
+public  class AuthenticationEntry {
+    private  String email;
+    private  String password;
 }

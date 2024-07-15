@@ -2,10 +2,12 @@ package com.masolria.dto;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public final class SpaceDto {
-    private final Long id;
-    private final String location;
-    private final String spaceType;
+@NoArgsConstructor
+public class SpaceDto {
+    private  Long id;
+    private  String location;
+    private  String spaceType;
 }

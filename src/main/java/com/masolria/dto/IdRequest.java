@@ -1,8 +1,12 @@
 package com.masolria.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public final class IdRequest {
-    private final Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+public  class IdRequest {
+    private  Long id;
 }

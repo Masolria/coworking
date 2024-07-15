@@ -1,10 +1,13 @@
 package com.masolria.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public final class UserDto {
-    private final Long id;
-    private final String email;
-
+@NoArgsConstructor
+@AllArgsConstructor
+public  class UserDto {
+    private  Long id;
+    private  String email;
 }
