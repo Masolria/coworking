@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping(value = "/authorize",produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<String> authorize(@RequestBody AuthenticationEntry authEntry){
-        authService.register(authEntry);
+        authService.authorize(authEntry);
         return ResponseEntity.status(HttpStatus.CREATED).body("You're successfully registered." +
                                                               "\nNow you are allowed to interact.");
     }

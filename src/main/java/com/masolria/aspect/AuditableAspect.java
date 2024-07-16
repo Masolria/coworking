@@ -30,7 +30,7 @@ public class AuditableAspect {
           System.out.println("audit worked");
         String methodCalled = joinPoint.getSignature().getName();
         UserDto userAuthorized = UserStoreUtil.getUserAuthorized();
-        String email = userAuthorized != null ? userAuthorized.email() : "no email";
+        String email = userAuthorized != null ? userAuthorized.getEmail() : "no email";
         LocalDateTime when = LocalDateTime.now();
         Object result = joinPoint.proceed();
         Audit audit = Audit.builder()

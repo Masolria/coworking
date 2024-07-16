@@ -1,6 +1,5 @@
 package com.masolria.repository;
 
-import com.masolria.db.LiquibaseRunner;
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
@@ -8,6 +7,12 @@ import com.masolria.entity.User;
 import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.*;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -16,6 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -41,10 +47,24 @@ public class PostgresTestContainer {
         dataSource.setPassword(postgres.getPassword());
         dataSource.setDriverClassName(postgres.getDriverClassName());
 
+       runMigration(dataSource);
 
 
-        LiquibaseRunner testMigration = new LiquibaseRunner(dataSource);
-        testMigration.runMigration();
+    }
+    private static void runMigration(DriverManagerDataSource dataSource){
+
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS migration")){
+            Database database = DatabaseFactory.getInstance()
+                    .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            preparedStatement.execute();
+            database.setLiquibaseSchemaName("migration");
+            Liquibase liquibase = new Liquibase("db/changelog/db.changelog-master.yaml",
+                    new ClassLoaderResourceAccessor(),database);
+            liquibase.update();
+        } catch (SQLException | LiquibaseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterAll

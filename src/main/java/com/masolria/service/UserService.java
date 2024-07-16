@@ -63,8 +63,11 @@ public class UserService {
      * @return The saved user.
      */
     public UserDto save(AuthenticationEntry entry) throws EmailAlreadyInUseException {
-        if (userRepository.findByEmail(entry.email()).isEmpty()) {
-            User user = User.builder().password(entry.password()).email(entry.email()).build();
+        if (userRepository.findByEmail(entry.getEmail()).isEmpty()) {
+            User user = User.builder()
+                    .password(entry.getPassword())
+                    .email(entry.getEmail())
+                    .build();
             userRepository.save(user);
             return mapper.toDto(user);
         } else throw new EmailAlreadyInUseException("This email already in use by another user.");
@@ -87,7 +90,7 @@ public class UserService {
      * @param user The user to be deleted.
      */
     public void delete(UserDto userDto) throws EntityNotFoundException{
-        Optional<User> optional = userRepository.findById(userDto.id());
+        Optional<User> optional = userRepository.findById(userDto.getId());
         if (optional.isPresent()) {
             userRepository.delete(optional.get());
         } else throw new EntityDeletionException("Given dto doesn't match any row in the table.");

@@ -116,7 +116,7 @@ public class BookingService {
     public List<BookingDto> getByDate(LocalDate localDate) {
         List<BookingDto> bookings = findAll();
         return bookings.stream()
-                .filter(b -> b.timeStart()
+                .filter(b -> b.getTimeStart()
                         .toLocalDate()
                         .equals(localDate))
                 .toList();
@@ -132,8 +132,8 @@ public class BookingService {
         List<BookingDto> bookings = findAll();
         return bookings.stream()
                 .filter(b -> {
-                    SpaceDto spaceDto = spaceService.findById(b.spaceId());
-                    return spaceDto.spaceType().equals(spaceType.name());
+                    SpaceDto spaceDto = spaceService.findById(b.getSpaceId());
+                    return spaceDto.getSpaceType().equals(spaceType.name());
                 })
                 .toList();
     }
@@ -147,7 +147,7 @@ public class BookingService {
     public List<BookingDto> getByUserId(Long userId) {
         List<BookingDto> bookings = findAll();
         return bookings.stream()
-                .filter(b -> userId.equals(b.forUserId()))
+                .filter(b -> userId.equals(b.getForUserId()))
                 .toList();
 
     }

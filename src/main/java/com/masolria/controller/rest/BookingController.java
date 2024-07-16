@@ -1,6 +1,8 @@
 package com.masolria.controller.rest;
 
+import com.masolria.annotation.AuthRequired;
 import com.masolria.dto.BookingDto;
+import com.masolria.dto.IdRequest;
 import com.masolria.entity.SpaceType;
 import com.masolria.service.BookingService;
 import com.masolria.util.DateTimeParseUtil;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value="/booking", produces = MediaType.APPLICATION_JSON_VALUE)
+@AuthRequired
 public class BookingController {
 
     private final  BookingService bookingService;
@@ -24,8 +27,8 @@ public class BookingController {
         return ResponseEntity.ok(dtoList);
     }
     @PostMapping(value = "/by-user-id")//produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookingDto>> byUserId(@RequestBody Long id) {
-        List<BookingDto> dtoList = bookingService.getByUserId(id);
+    public ResponseEntity<List<BookingDto>> byUserId(@RequestBody IdRequest req) {
+        List<BookingDto> dtoList = bookingService.getByUserId(req.getId());
         return ResponseEntity.ok(dtoList);
     }
     @PostMapping(value = "/by-date")//produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,25 +43,25 @@ public class BookingController {
         return ResponseEntity.ok(freeSlots);
     }
     @PatchMapping("/reserve")
-    public ResponseEntity<String> reserve(@RequestBody Long id){
-        bookingService.reserve(id);
+    public ResponseEntity<String> reserve(@RequestBody IdRequest req){
+        bookingService.reserve(req.getId());
         return ResponseEntity.ok("The slot was successfully reserved.");
     }
     @PatchMapping("/release")
-    public ResponseEntity<String> release(@RequestBody Long id){
-        bookingService.release(id);
+    public ResponseEntity<String> release(@RequestBody IdRequest req){
+        bookingService.release(req.getId());
         return ResponseEntity.ok("Booking updated successfully");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BookingDto> get(@PathVariable(name="id")Long id){
-       BookingDto dto = bookingService.findById(id);
+    @GetMapping("/by-id")
+    public ResponseEntity<BookingDto> get(@RequestBody IdRequest req){
+       BookingDto dto = bookingService.findById(req.getId());
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "id") Long id){
-        bookingService.delete(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(@RequestBody IdRequest req){
+        bookingService.delete(req.getId());
        return ResponseEntity.ok("Booking deleted successfully");
     }
 

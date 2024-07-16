@@ -22,7 +22,7 @@ public class AuthService {
     /**
      * The User service.
      */
-   private final  UserService userService;
+    private final UserService userService;
 
     private final UserMapper userMapper;
 
@@ -36,8 +36,8 @@ public class AuthService {
      * @throws IllegalArgumentException if the email or password is null, blank, or empty.
      */
     public UserDto register(AuthenticationEntry entry) throws IllegalArgumentException {
-        String password = entry.password();
-        String email = entry.email();
+        String password = entry.getPassword();
+        String email = entry.getEmail();
         if (email == null || password == null || email.isBlank() || email.isEmpty() || password.isEmpty() || password.isBlank()) {
             throw new IllegalArgumentException("cannot register, input data is invalid");
         } else if (userService.getByEmail(email) != null) {
@@ -49,17 +49,16 @@ public class AuthService {
     /**
      * Authorizes a user based on their email and password.
      *
-     * @param email    The user's email address.
-     * @param password The user's password.
+     * @param entry The dto with email address and password.
      * @return The authorized user if the email and password match.
      * @throws IllegalArgumentException if the user with the given email doesn't exist or if the password is incorrect.
      */
 
     public UserDto authorize(AuthenticationEntry entry) {
-        String email = entry.email();
-        String password = entry.password();
+        String email = entry.getEmail();
+        String password = entry.getPassword();
         User user = userService.getByEmail(email);
-        if (user==null) {
+        if (user == null) {
             throw new UserNotExistException("User with given email doesn't exist");
         }
         if (password.equals(user.getPassword())) {

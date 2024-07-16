@@ -1,11 +1,10 @@
 package com.masolria.controller.rest;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.masolria.dto.BookingDto;
+import com.masolria.dto.IdRequest;
 import com.masolria.entity.SpaceType;
 import com.masolria.service.BookingService;
 import com.masolria.util.DateTimeParseUtil;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,14 +57,15 @@ class BookingControllerTest {
 
     @Test
     void byUserId() throws Exception {
-        Long id = 3L;
+        IdRequest req = new IdRequest(3L);
         List<BookingDto> list = Collections.emptyList();
-        String jsonReq = mapper.writeValueAsString(id);
-        when(bookingService.getByUserId(3L)).thenReturn(list);
+        String jsonReq = mapper.writeValueAsString(req);
+        System.out.println(jsonReq);
+        when(bookingService.getByUserId(req.getId())).thenReturn(list);
         mockMvc.perform(post("/booking/by-user-id")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonReq)).andExpect(status().isOk());
-        verify(bookingService, times(1)).getByUserId(id);
+        verify(bookingService, times(1)).getByUserId(req.getId());
     }
 
     @Test
@@ -91,13 +92,13 @@ class BookingControllerTest {
 
     @Test
     void reserve() throws Exception {
-        Long id = 4L;
-        doNothing().when(bookingService).reserve(id);
-        String jsonReq = mapper.writeValueAsString(id);
+        IdRequest req = new IdRequest(3L);
+        doNothing().when(bookingService).reserve(req.getId());
+        String jsonReq = mapper.writeValueAsString(req);
         mockMvc.perform(patch("/booking/reserve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonReq)).andExpect(status().isOk());
-        verify(bookingService, times(1)).reserve(id);
+        verify(bookingService, times(1)).reserve(req.getId());
     }
 
     @Test
@@ -113,12 +114,16 @@ class BookingControllerTest {
     }
 
     @Test
-    @Ignore
+
     void getBooking() throws Exception {
         BookingDto dto = new BookingDto(1L, false, LocalDateTime.now(),
                 LocalDateTime.now(), 3L, 4L);
         when(bookingService.findById(1L)).thenReturn(dto);
-        mockMvc.perform(get("/booking/{id}", 1L))
+        IdRequest req = new IdRequest(1L);
+        String json = mapper.writeValueAsString(req);
+        mockMvc.perform(get("/booking/by-id")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk());
                 //TODO
         verify(bookingService, times(1)).findById(1L);
@@ -128,7 +133,11 @@ class BookingControllerTest {
     void deleteBooking() throws Exception {
         Long id = 3L;
         doNothing().when(bookingService).delete(id);
-        mockMvc.perform(delete("/booking/delete/{id}", id)
+        IdRequest req = new IdRequest(3L);
+        String json = mapper.writeValueAsString(req);
+        mockMvc.perform(delete("/booking/delete")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
         verify(bookingService, times(1)).delete(id);
     }
@@ -137,12 +146,20 @@ class BookingControllerTest {
     void update() throws Exception {
         BookingDto dto = new BookingDto(1L, false, LocalDateTime.now(),
                 LocalDateTime.now(), 3L, 4L);
-        String jsonReq = mapper.writeValueAsString(dto);
-        when(bookingService.update(any())).thenReturn(null);
+        String jsonReq ="{  \n" +
+                        "    \"id\":100049,\n" +
+                        "    \"isBooked\":\"false\",\n" +
+                        "    \"timeStart\":\"2024-07-15 18:12:28.764188\",\n" +
+                        "    \"timeEnd\":\"2024-07-15 18:12:28.764188\",\n" +
+                        "    \"spaceId\":\"100002\",\n" +
+                        "    \"forUserId\":100000\n" +
+                        "}";
+        when(bookingService.update(any())).thenReturn(dto);
         mockMvc.perform(put("/booking/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonReq))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string("Booking updated successfully"));
         verify(bookingService,times(1)).update(any());
     }
 }
