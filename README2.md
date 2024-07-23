@@ -1,9 +1,14 @@
 ### Endpoints
+`run application`
+
+-`1. docker-compose up -d`
+
+-`2.run tomcat 9 `
 
 Firstly you must register if you haven't done so before and log in.
 
-- `POST /login`
-- `POST /register`
+- `POST /auth/login`
+- `POST auth/register`
   `` json for log in:``
   {
   "email":"default@email.com",
@@ -29,8 +34,8 @@ and then you are allowed to interact.
   {
   "date":"2024 02 06"
   }
-- `PUT /booking-reserve` reserves a slot with given id if it's free
-- `PUT /booking-release` releases a slot with given id
+- `PUT /booking/reserve` reserves a slot with given id if it's free
+- `PUT /booking/release` releases a slot with given id
   {
   "id":100005
   }

@@ -2,9 +2,9 @@ package com.masolria.repository.Jdbc;
 
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
-import com.masolria.db.ConnectionManager;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,12 +16,13 @@ import static com.masolria.repository.Jdbc.Queries.*;
  * The Jdbc space repository.Performs CRUD operations for space entries to the database.
  * Postgresql dialect in all sql queries.
  */
+@Repository
 @RequiredArgsConstructor
 public class JdbcSpaceRepository {
     /**
      * The field configures the connection to the database
      */
-    private final ConnectionManager cManager;
+    private final DriverManagerDataSource datasource;
 
     /**
      * Saves space to the table. Assigns the generated value to id
@@ -30,7 +31,7 @@ public class JdbcSpaceRepository {
      * @return the space with new id
      */
     public Space save(Space space) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SPACE_INSERT,
                      Statement.RETURN_GENERATED_KEYS)) {
 
@@ -60,7 +61,7 @@ public class JdbcSpaceRepository {
      */
     public Space update(Space space) {
         PreparedStatement preparedStatement;
-        try (Connection connection = cManager.getConnection()) {
+        try (Connection connection = datasource.getConnection()) {
             preparedStatement = connection.prepareStatement(SPACE_UPDATE);
             preparedStatement.setString(1, space.getLocation());
             preparedStatement.setString(2, space.getSpaceType().name());
@@ -79,7 +80,7 @@ public class JdbcSpaceRepository {
      * @param space the space for deletion
      */
     public void delete(Space space) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SPACE_DELETE)) {
             preparedStatement.setLong(1, space.getId());
             preparedStatement.executeUpdate();
@@ -96,7 +97,7 @@ public class JdbcSpaceRepository {
      * @return Optional object with a space if found. Otherwise, return empty optional.
      */
     public Optional<Space> findById(Long id) {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SPACE_GET_BY_ID)) {
             preparedStatement.setLong(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -121,7 +122,7 @@ public class JdbcSpaceRepository {
      * @return the list with all available space entries.
      */
     public List<Space> findAll() {
-        try (Connection connection = cManager.getConnection();
+        try (Connection connection = datasource.getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(SPACE_FIND_ALL);
             List<Space> spaces = new ArrayList<>();

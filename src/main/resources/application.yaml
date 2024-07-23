@@ -1,0 +1,9 @@
+datasource:
+  password: coworkpassword
+  url: jdbc:postgresql://localhost:5433/coworking_db
+  user: coworking_user
+  driver: org.postgresql.Driver
+liquibase:
+  changelogFile: db/changelog/db.changelog-master.yaml
+  enabled: true
+  schema: migration

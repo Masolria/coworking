@@ -1,7 +1,5 @@
 package com.masolria.repository;
 
-import com.masolria.db.ConnectionManager;
-import com.masolria.db.LiquibaseRunner;
 import com.masolria.entity.Booking;
 import com.masolria.entity.Space;
 import com.masolria.entity.SpaceType;
@@ -9,13 +7,21 @@ import com.masolria.entity.User;
 import com.masolria.repository.Jdbc.JdbcBookingRepository;
 import com.masolria.repository.Jdbc.JdbcSpaceRepository;
 import com.masolria.repository.Jdbc.JdbcUserRepository;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.*;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -35,14 +41,30 @@ public class PostgresTestContainer {
     @BeforeAll
     static void beforeAll() {
         postgres.start();
-        ConnectionManager cManager = new ConnectionManager(
-                postgres.getJdbcUrl(),
-                postgres.getUsername(),
-                postgres.getPassword(),
-                postgres.getDriverClassName()
-        );
-        LiquibaseRunner testMigration = new LiquibaseRunner(cManager);
-        testMigration.runMigration();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setUsername(postgres.getUsername());
+        dataSource.setUrl(postgres.getJdbcUrl());
+        dataSource.setPassword(postgres.getPassword());
+        dataSource.setDriverClassName(postgres.getDriverClassName());
+
+       runMigration(dataSource);
+
+
+    }
+    private static void runMigration(DriverManagerDataSource dataSource){
+
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS migration")){
+            Database database = DatabaseFactory.getInstance()
+                    .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            preparedStatement.execute();
+            database.setLiquibaseSchemaName("migration");
+            Liquibase liquibase = new Liquibase("db/changelog/db.changelog-master.yaml",
+                    new ClassLoaderResourceAccessor(),database);
+            liquibase.update();
+        } catch (SQLException | LiquibaseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterAll
@@ -53,13 +75,13 @@ public class PostgresTestContainer {
 
     @AfterEach
     void tearDown() {
-        ConnectionManager cManager = new ConnectionManager(
-                postgres.getJdbcUrl(),
-                postgres.getUsername(),
-                postgres.getPassword(),
-                postgres.getDriverClassName()
-        );
-        try (Connection connection = cManager.getConnection()) {
+
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setUsername(PostgresTestContainer.postgres.getUsername());
+        dataSource.setUrl(PostgresTestContainer.postgres.getJdbcUrl());
+        dataSource.setPassword(PostgresTestContainer.postgres.getPassword());
+        dataSource.setDriverClassName(PostgresTestContainer.postgres.getDriverClassName());
+        try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             statement.execute("TRUNCATE TABLE  coworking_schema.booking;");
             statement.execute("TRUNCATE TABLE coworking_schema.space;");
@@ -78,13 +100,13 @@ public class PostgresTestContainer {
 
         @BeforeEach
         void setupTestData() {
-            ConnectionManager cManager = new ConnectionManager(
-                    postgres.getJdbcUrl(),
-                    postgres.getUsername(),
-                    postgres.getPassword(),
-                    postgres.getDriverClassName()
-            );
-            jdbcSpaceRepository = new JdbcSpaceRepository(cManager);
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
+            dataSource.setUsername(PostgresTestContainer.postgres.getUsername());
+            dataSource.setUrl(PostgresTestContainer.postgres.getJdbcUrl());
+            dataSource.setPassword(PostgresTestContainer.postgres.getPassword());
+            dataSource.setDriverClassName(PostgresTestContainer.postgres.getDriverClassName());
+            jdbcSpaceRepository = new JdbcSpaceRepository(dataSource);
             given = Space.builder().location("unknown").spaceType(SpaceType.CONFERENCE_HALL).build();
             given2 = Space.builder().location("unknown2").spaceType(SpaceType.WORKING_SPACE).build();
         }
@@ -144,13 +166,13 @@ public class PostgresTestContainer {
 
         @BeforeEach
         void setupTestData() {
-            ConnectionManager cManager = new ConnectionManager(
-                    postgres.getJdbcUrl(),
-                    postgres.getUsername(),
-                    postgres.getPassword(),
-                    postgres.getDriverClassName()
-            );
-            jdbcUserRepository = new JdbcUserRepository(cManager);
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
+            dataSource.setUsername(PostgresTestContainer.postgres.getUsername());
+            dataSource.setUrl(PostgresTestContainer.postgres.getJdbcUrl());
+            dataSource.setPassword(PostgresTestContainer.postgres.getPassword());
+            dataSource.setDriverClassName(PostgresTestContainer.postgres.getDriverClassName());
+            jdbcUserRepository = new JdbcUserRepository(dataSource);
         }
 
         @Test
@@ -209,13 +231,13 @@ public class PostgresTestContainer {
 
         @BeforeEach
         void setupTestData() {
-            ConnectionManager cManager = new ConnectionManager(
-                    postgres.getJdbcUrl(),
-                    postgres.getUsername(),
-                    postgres.getPassword(),
-                    postgres.getDriverClassName()
-            );
-            jdbcBookingRepository = new JdbcBookingRepository(cManager);
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
+            dataSource.setUsername(PostgresTestContainer.postgres.getUsername());
+            dataSource.setUrl(PostgresTestContainer.postgres.getJdbcUrl());
+            dataSource.setPassword(PostgresTestContainer.postgres.getPassword());
+            dataSource.setDriverClassName(PostgresTestContainer.postgres.getDriverClassName());
+            jdbcBookingRepository = new JdbcBookingRepository(dataSource);
              given = Booking.builder()
                     .isBooked(true)
                     .spaceId(1L)

@@ -8,7 +8,7 @@ public class SpaceValidator implements Validator<SpaceDto> {
     private static final SpaceValidator INSTANCE = new SpaceValidator();
     @Override
     public boolean isValid(SpaceDto object) {
-        return object.spaceType() != null && object.location() != null;
+        return object.getSpaceType() != null && object.getLocation() != null;
     }
     private SpaceValidator() {}
 }

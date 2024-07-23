@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public  class AuthenticationEntry {
-    private  String email;
-    private  String password;
+@AllArgsConstructor
+public  class IdRequest {
+    private  Long id;
 }

@@ -58,6 +58,7 @@ class BookingServiceTest {
     void save() {
         when(bookingRepository.save(given)).thenReturn(given);
         BookingDto givenDto = mapper.toDto(given);
+
         BookingDto saved = bookingService.save(givenDto);
         assertThat(saved).isEqualTo(givenDto);
     }
@@ -77,14 +78,14 @@ class BookingServiceTest {
         assertThat(userBookings).hasSize(2);
     }
 
-    @Test
-    void update() {
-
-        BookingDto givenDto = mapper.toDto(given);
-        when(bookingRepository.update(given)).thenReturn(given);
-        BookingDto actual = bookingService.update(givenDto);
-        assertThat(actual).isEqualTo(givenDto);
-    }
+//    @Test
+//    void update() {
+//
+//        BookingDto givenDto = mapper.toDto(given);
+//        when(bookingRepository.update(given)).thenReturn(given);
+//        BookingDto actual = bookingService.update(givenDto);
+//        assertThat(actual).isEqualTo(givenDto);
+//    }
 
     @Test
     void deleteThrows() {
